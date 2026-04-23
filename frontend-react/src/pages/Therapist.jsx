@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { io } from 'socket.io-client'
+import { socket } from '../lib/socket'
+import { apiUrl } from '../lib/api'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import CallTopbar from '../components/CallTopbar'
@@ -61,7 +62,7 @@ const TIMELINE_LIMIT = 30
 const STRESS_ALERT_THRESHOLD = 0.72
 const ALERT_COOLDOWN_MS = 4000
 const FACE_API_SCRIPT_CANDIDATES = [
-  '/face-api.js/dist/face-api.js',
+  '/face-api.js',
 ]
 const MODEL_URL = `${window.location.origin}/models`
 const MODEL_LOAD_TIMEOUT_MS = 15000
@@ -764,7 +765,9 @@ export default function Therapist() {
   }, [])
 
   useEffect(() => {
-    const socket = io()
+    const socket = io("https://serien-model.onrender.com", {
+  transports: ["websocket"],
+  })
 
     socketRef.current = socket
     
@@ -1175,7 +1178,7 @@ export default function Therapist() {
 
     const reportRef = await addDoc(collection(firestoreDb, 'reports'), reportPayload)
 
-    fetch('/send-report-email', {
+    fetch(apiUrl('/send-report-email'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
