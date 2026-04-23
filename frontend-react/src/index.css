@@ -39,11 +39,13 @@ html,
 body,
 #root,
 .app-shell {
+  height: 100%;
   min-height: 100%;
 }
 
 .app-shell {
   position: relative;
+  min-height: 100vh;
   z-index: 1;
   background: transparent;
 }
@@ -618,6 +620,49 @@ html {
   margin-top: 0.3rem;
   font-size: 1.2rem;
   color: #0f3550;
+}
+
+.ts-loading-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.ts-loading-screen__content {
+  width: min(92vw, 440px);
+  display: grid;
+  gap: 0.85rem;
+  text-align: center;
+  justify-items: center;
+}
+
+.ts-loading-screen__video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+}
+
+.ts-loading-screen__message-wrap {
+  min-height: 1.7rem;
+  display: grid;
+  place-items: center;
+}
+
+.ts-loading-screen__message {
+  margin: 0;
+  color: #1d2838;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .therapist-overview__profile-card {
@@ -2967,11 +3012,27 @@ body {
 }
 
 .ts-card {
+  position: relative;
+  isolation: isolate;
   background: var(--color-card-bg);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ts-card-transition-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-card-bg) 70%, var(--color-bg-page) 30%);
+}
+
+.ts-card-transition-content {
+  position: relative;
+  z-index: 1;
 }
 
 .ts-card--booking {
@@ -5020,6 +5081,10 @@ body {
   background: color-mix(in srgb, var(--color-card-bg) 92%, #f8fafc 8%);
   box-shadow: none;
   border-color: color-mix(in srgb, var(--color-border) 84%, #ffffff 16%);
+}
+
+.page-transition {
+  animation: none !important;
 }
 
 .ts-row-between {

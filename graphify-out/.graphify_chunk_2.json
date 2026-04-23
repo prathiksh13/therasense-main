@@ -1,0 +1,467 @@
+{
+  "nodes": [
+    {
+      "id": "comp_navbar",
+      "label": "Navbar",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_notifications_bell",
+      "label": "NotificationsBell",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_patient_journal",
+      "label": "PatientJournal",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_pre_session_form",
+      "label": "PreSessionForm",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_profile_menu",
+      "label": "ProfileMenu",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_protected_route",
+      "label": "ProtectedRoute",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_public_route",
+      "label": "PublicRoute",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_report",
+      "label": "Report",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_report_list",
+      "label": "ReportList",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_session_card",
+      "label": "SessionCard",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_session_list",
+      "label": "SessionList",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_session_report_card",
+      "label": "SessionReportCard",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_session_timeline_replay",
+      "label": "SessionTimelineReplay",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_sidebar",
+      "label": "Sidebar",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_theme_toggle",
+      "label": "ThemeToggle",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_therapist_messenger",
+      "label": "TherapistMessenger",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_therapist_notes",
+      "label": "TherapistNotes",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_video_call",
+      "label": "VideoCall",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_video_controls",
+      "label": "VideoControls",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_badge",
+      "label": "Badge",
+      "file_type": "code"
+    },
+    {
+      "id": "comp_buttons",
+      "label": "Buttons",
+      "file_type": "code"
+    },
+    {
+      "id": "ctx_auth",
+      "label": "AuthContext",
+      "file_type": "code"
+    },
+    {
+      "id": "ctx_theme",
+      "label": "ThemeContext",
+      "file_type": "code"
+    },
+    {
+      "id": "lib_firebase",
+      "label": "Firebase Auth & Firestore",
+      "file_type": "code"
+    },
+    {
+      "id": "lib_chartjs",
+      "label": "Chart.js",
+      "file_type": "code"
+    },
+    {
+      "id": "lib_react_router",
+      "label": "React Router",
+      "file_type": "code"
+    },
+    {
+      "id": "util_analyze_emotions",
+      "label": "analyzeEmotions",
+      "file_type": "code"
+    },
+    {
+      "id": "util_auth_helpers",
+      "label": "auth utils",
+      "file_type": "code"
+    },
+    {
+      "id": "util_normalize_session",
+      "label": "normalizeSessionStatus",
+      "file_type": "code"
+    },
+    {
+      "id": "data_session",
+      "label": "Session",
+      "file_type": "code"
+    },
+    {
+      "id": "data_report",
+      "label": "Report",
+      "file_type": "code"
+    },
+    {
+      "id": "data_emotion",
+      "label": "EmotionData",
+      "file_type": "code"
+    },
+    {
+      "id": "data_message",
+      "label": "Message",
+      "file_type": "code"
+    },
+    {
+      "id": "data_journal_entry",
+      "label": "JournalEntry",
+      "file_type": "code"
+    }
+  ],
+  "edges": [
+    {
+      "source": "comp_navbar",
+      "target": "comp_theme_toggle",
+      "relation": "renders",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_navbar",
+      "target": "lib_firebase",
+      "relation": "authenticates_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_navbar",
+      "target": "util_auth_helpers",
+      "relation": "calls",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_navbar",
+      "target": "lib_react_router",
+      "relation": "uses",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_notifications_bell",
+      "target": "lib_firebase",
+      "relation": "queries",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_notifications_bell",
+      "target": "data_session",
+      "relation": "displays",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_notifications_bell",
+      "target": "data_report",
+      "relation": "displays",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_patient_journal",
+      "target": "lib_chartjs",
+      "relation": "visualizes_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_patient_journal",
+      "target": "lib_firebase",
+      "relation": "persists_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_patient_journal",
+      "target": "data_journal_entry",
+      "relation": "manages",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_pre_session_form",
+      "target": "lib_firebase",
+      "relation": "saves_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_pre_session_form",
+      "target": "data_session",
+      "relation": "references",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_profile_menu",
+      "target": "lib_firebase",
+      "relation": "authenticates_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_profile_menu",
+      "target": "lib_react_router",
+      "relation": "navigates_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_protected_route",
+      "target": "ctx_auth",
+      "relation": "reads_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_protected_route",
+      "target": "lib_react_router",
+      "relation": "uses",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_public_route",
+      "target": "ctx_auth",
+      "relation": "reads_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_public_route",
+      "target": "lib_react_router",
+      "relation": "uses",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_report",
+      "target": "util_analyze_emotions",
+      "relation": "calls",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_report",
+      "target": "data_emotion",
+      "relation": "renders",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_card",
+      "target": "comp_badge",
+      "relation": "renders",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_card",
+      "target": "comp_buttons",
+      "relation": "renders",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_card",
+      "target": "util_normalize_session",
+      "relation": "calls",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_card",
+      "target": "data_session",
+      "relation": "displays",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_list",
+      "target": "data_session",
+      "relation": "renders_items",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_report_card",
+      "target": "lib_chartjs",
+      "relation": "visualizes_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_report_card",
+      "target": "data_emotion",
+      "relation": "analyzes",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_session_timeline_replay",
+      "target": "lib_chartjs",
+      "relation": "visualizes_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_sidebar",
+      "target": "lib_react_router",
+      "relation": "uses",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_theme_toggle",
+      "target": "ctx_theme",
+      "relation": "reads_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_therapist_messenger",
+      "target": "lib_firebase",
+      "relation": "subscribes_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_therapist_messenger",
+      "target": "data_message",
+      "relation": "manages",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_therapist_notes",
+      "target": "lib_firebase",
+      "relation": "persists_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_therapist_notes",
+      "target": "data_session",
+      "relation": "references",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_video_call",
+      "target": "data_session",
+      "relation": "renders_for",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "comp_video_controls",
+      "target": "comp_video_call",
+      "relation": "controls",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "comp_report_list",
+      "target": "data_report",
+      "relation": "renders_items",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "comp_badge",
+      "target": "data_session",
+      "relation": "displays_status_of",
+      "confidence": "EXTRACTED"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "he_session_flow",
+      "label": "Session Management Flow",
+      "nodes": [
+        "comp_session_card",
+        "comp_session_list",
+        "comp_video_call",
+        "comp_video_controls",
+        "data_session"
+      ],
+      "relation": "comprises_session_lifecycle"
+    },
+    {
+      "id": "he_emotion_analysis",
+      "label": "Emotion Analysis Pipeline",
+      "nodes": [
+        "comp_video_call",
+        "comp_report",
+        "comp_session_report_card",
+        "util_analyze_emotions",
+        "data_emotion",
+        "lib_chartjs"
+      ],
+      "relation": "processes_and_visualizes_emotions"
+    },
+    {
+      "id": "he_messaging_system",
+      "label": "Patient-Therapist Communication",
+      "nodes": [
+        "comp_therapist_messenger",
+        "comp_therapist_notes",
+        "lib_firebase",
+        "data_message"
+      ],
+      "relation": "enables_bidirectional_communication"
+    },
+    {
+      "id": "he_patient_dashboard",
+      "label": "Patient Dashboard Widgets",
+      "nodes": [
+        "comp_sidebar",
+        "comp_patient_journal",
+        "comp_pre_session_form",
+        "comp_session_list",
+        "comp_report_list"
+      ],
+      "relation": "composes_patient_interface"
+    },
+    {
+      "id": "he_auth_layer",
+      "label": "Authentication & Authorization",
+      "nodes": [
+        "comp_navbar",
+        "comp_protected_route",
+        "comp_public_route",
+        "comp_profile_menu",
+        "ctx_auth",
+        "lib_firebase"
+      ],
+      "relation": "secures_application_access"
+    }
+  ]
+}

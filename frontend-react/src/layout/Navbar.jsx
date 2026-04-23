@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import NotificationsBell from '../components/NotificationsBell'
 import useUserRole from '../hooks/useUserRole'
+import { usePageTransition } from '../context/PageTransitionContext'
 
 function getPageTitle(pathname) {
   if (pathname === '/dashboard') return 'Dashboard'
@@ -19,6 +20,7 @@ function getPageTitle(pathname) {
 export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
+  const transition = usePageTransition()
   const { role, uid } = useUserRole()
   const title = useMemo(() => getPageTitle(location.pathname), [location.pathname])
 
@@ -44,7 +46,13 @@ export default function Navbar() {
           type="button"
           className="workspace-topbar__avatar"
           aria-label="Open profile"
-          onClick={() => navigate('/profile')}
+          onClick={() => {
+            if (transition?.navigateWithTransition) {
+              transition.navigateWithTransition('/profile')
+              return
+            }
+            navigate('/profile')
+          }}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="8" r="3.25" />

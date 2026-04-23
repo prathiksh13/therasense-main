@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -10,6 +11,8 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import { usePageTransition } from '../context/PageTransitionContext'
+import { cardBackgroundVariants, cardMotionVariants } from '../lib/pageTransitionMotion'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler)
 
@@ -20,6 +23,7 @@ function riskTone(risk = 'Low') {
 }
 
 export default function SessionReportCard({ report, elementId = 'session-report-card' }) {
+  const transition = usePageTransition()
   const createdAt = report?.createdAt?.toDate ? report.createdAt.toDate() : report?.createdAt instanceof Date ? report.createdAt : null
   const dateLabel = createdAt ? createdAt.toLocaleString() : 'Timestamp unavailable'
   const emotionData = report?.emotionData || {}
@@ -110,8 +114,8 @@ export default function SessionReportCard({ report, elementId = 'session-report-
     []
   )
 
-  return (
-    <section id={elementId} className="report-panel glass rounded-2xl p-5 dashboard-card-hover">
+  const cardContent = (
+    <>
       <header className="rounded-2xl border border-white/10 bg-white/5 p-4">
         <p className="dashboard-panel__eyebrow">TheraSense Session Report</p>
         <div className="mt-3 grid gap-2 text-sm text-slate-200 md:grid-cols-2">
@@ -173,6 +177,28 @@ export default function SessionReportCard({ report, elementId = 'session-report-
         <h3 className="section-heading text-sm">Therapist Notes</h3>
         <p className="mt-2 text-sm text-slate-300 whitespace-pre-line">{notes || 'No notes recorded.'}</p>
       </section>
-    </section>
+    </>
+  )
+
+  if (!transition) {
+    return (
+      <section id={elementId} className="report-panel glass rounded-2xl p-5 dashboard-card-hover">
+        {cardContent}
+      </section>
+    )
+  }
+
+  return (
+    <motion.section
+      id={elementId}
+      className="report-panel glass rounded-2xl p-5 dashboard-card-hover"
+      variants={cardMotionVariants}
+    >
+      <motion.span className="ts-card-transition-bg" aria-hidden="true" variants={cardBackgroundVariants} />
+      <div className="ts-card-transition-content">
+        {cardContent}
+      </div>
+    </motion.section>
   )
 }
+

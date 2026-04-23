@@ -6,6 +6,7 @@ import usePatientWorkspaceData from '../hooks/usePatientWorkspaceData'
 import useTherapistWorkspaceData from '../hooks/useTherapistWorkspaceData'
 import { firebaseAuth } from '../lib/firebase'
 import { handleJoinCall } from '../utils/sessionCall'
+import { usePageTransition } from '../context/PageTransitionContext'
 
 const patientLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
@@ -41,6 +42,7 @@ export default function Sidebar({ open, onClose }) {
   const patientData = usePatientWorkspaceData()
   const therapistData = useTherapistWorkspaceData()
   const navigate = useNavigate()
+  const transition = usePageTransition()
   const navLinks = role === 'therapist' ? therapistLinks : patientLinks
 
   async function handleLogout() {
@@ -49,8 +51,26 @@ export default function Sidebar({ open, onClose }) {
     } catch {
       // ignore
     } finally {
-      navigate('/login')
+      if (transition?.navigateWithTransition) {
+        transition.navigateWithTransition('/login')
+      } else {
+        navigate('/login')
+      }
     }
+  }
+
+  function handleNavigate(event, to) {
+    if (event.defaultPrevented) return
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return
+    event.preventDefault()
+
+    if (transition?.navigateWithTransition) {
+      transition.navigateWithTransition(to)
+    } else {
+      navigate(to)
+    }
+
+    onClose?.()
   }
 
   function normalizeStatus(status = '') {
@@ -193,7 +213,7 @@ export default function Sidebar({ open, onClose }) {
               <Link
                 key={link.to}
                 to={link.to}
-                onClick={onClose}
+                onClick={(event) => handleNavigate(event, link.to)}
                 className={`workspace-sidebar__link dashboard-sidebar__link ${isActive ? 'workspace-sidebar__link--active dashboard-sidebar__link--active' : ''}`}
               >
                 <span className="workspace-sidebar__icon">{renderIcon(link.icon)}</span>
