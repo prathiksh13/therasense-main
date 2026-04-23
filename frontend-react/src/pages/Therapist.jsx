@@ -765,17 +765,9 @@ export default function Therapist() {
   }, [])
 
  useEffect(() => {
-  const socketInstance = io("https://serien-model.onrender.com", {
-    transports: ["websocket"],
-  })
-
-  socketRef.current = socketInstance
-
-  return () => {
-    socketInstance.disconnect()
-  }
-}, [])
-
+  const socket = io(io("https://serien-model.onrender.com", {
+  transports: ["websocket"],
+})
     socketRef.current = socket
     
 
