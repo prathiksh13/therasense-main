@@ -414,7 +414,7 @@ export default function Patient() {
   }
 
   useEffect(() => {
-    const socket = io(io("https://serien-model.onrender.com", {
+    const socket = io("https://serien-model.onrender.com", {
   transports: ["websocket"],
 })
 
