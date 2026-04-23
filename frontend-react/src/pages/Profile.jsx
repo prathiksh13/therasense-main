@@ -133,6 +133,8 @@ export default function Profile() {
     return 'January 2024'
   }, [profile.createdAt])
 
+  const avatarFallback = user?.displayName ? user.displayName.slice(0, 1).toUpperCase() : 'P'
+
   if (loading) {
     return <Card><p className="ts-text-secondary">Loading profile...</p></Card>
   }
@@ -149,11 +151,20 @@ export default function Profile() {
       <Card>
         <div className="ts-profile-header">
           <div className="ts-profile-avatar">
-            <UserIcon />
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt={profile.name || user.displayName || 'Profile photo'}
+                className="ts-profile-avatar__image"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <span aria-hidden="true">{avatarFallback}</span>
+            )}
           </div>
           <div>
             <h2 className="ts-section-title">{profile.name || 'patient'}</h2>
-            <p className="ts-text-secondary">Member since {memberSince}</p>
+            <p className="ts-text-secondary">{profile.role || 'patient'} • Member since {memberSince}</p>
           </div>
         </div>
       </Card>

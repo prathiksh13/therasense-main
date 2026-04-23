@@ -33,7 +33,10 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-2xl">
         <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 md:px-8">
           <div className="flex items-center gap-8">
-            <span className="text-2xl font-extrabold tracking-tight text-tg-700">Serien</span>
+            <div className="flex items-center gap-3">
+              <img src="/logo.jpeg" alt="Serien" className="landing-brand-logo" />
+              <span className="text-2xl font-extrabold tracking-tight text-tg-700">Serien</span>
+            </div>
             <div className="hidden items-center gap-6 md:flex">
               <a className="border-b-2 border-tg-600 text-tg-700" href="#hero">Home</a>
               <a className="font-medium text-slate-500 transition-colors hover:text-tg-700" href="#features">Platform</a>

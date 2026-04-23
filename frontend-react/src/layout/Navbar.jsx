@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import NotificationsBell from '../components/NotificationsBell'
 import useUserRole from '../hooks/useUserRole'
 import { usePageTransition } from '../context/PageTransitionContext'
+import { useAuth } from '../context/AuthContext'
 
 function getPageTitle(pathname) {
   if (pathname === '/dashboard') return 'Dashboard'
@@ -21,44 +21,49 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const transition = usePageTransition()
+  const { user } = useAuth()
   const { role, uid } = useUserRole()
   const title = useMemo(() => getPageTitle(location.pathname), [location.pathname])
+  const roleLabel = role || 'patient'
+  const avatarText = user?.displayName ? user.displayName.slice(0, 1).toUpperCase() : 'P'
+  const photoUrl = user?.photoURL || ''
 
   return (
     <nav className="workspace-topbar dashboard-navbar" style={{ overflow: 'visible' }}>
       <div className="workspace-topbar__left dashboard-navbar__left">
         <div className="workspace-topbar__brand">
-          <div className="workspace-topbar__logo" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z" />
-            </svg>
-          </div>
+          <img className="workspace-topbar__brand-logo" src="/logo.jpeg" alt="Serien" />
           <div>
-            <h1 className="workspace-topbar__title dashboard-navbar__title">Serien</h1>
+            <h1 className="workspace-topbar__title dashboard-navbar__title sr-only">Serien</h1>
             <p className="workspace-topbar__page-label">{title}</p>
           </div>
         </div>
       </div>
 
       <div className="workspace-topbar__right dashboard-navbar__right">
-        <NotificationsBell uid={uid} role={role} />
-        <button
-          type="button"
-          className="workspace-topbar__avatar"
-          aria-label="Open profile"
-          onClick={() => {
-            if (transition?.navigateWithTransition) {
-              transition.navigateWithTransition('/profile')
-              return
-            }
-            navigate('/profile')
-          }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="8" r="3.25" />
-            <path d="M6.5 19c1.5-3 3.8-4.5 5.5-4.5S16 16 17.5 19" />
-          </svg>
-        </button>
+        {uid ? (
+          <div className="workspace-topbar__identity" aria-label={`Current role: ${roleLabel}`}>
+            <span className="workspace-topbar__role-pill">{roleLabel}</span>
+            <button
+              type="button"
+              className="workspace-topbar__avatar"
+              aria-label="Open profile"
+              onClick={() => {
+                if (transition?.navigateWithTransition) {
+                  transition.navigateWithTransition('/profile')
+                  return
+                }
+                navigate('/profile')
+              }}
+            >
+              {photoUrl ? (
+                <img className="workspace-topbar__avatar-image" src={photoUrl} alt="Profile" referrerPolicy="no-referrer" />
+              ) : (
+                <span aria-hidden="true">{avatarText}</span>
+              )}
+            </button>
+          </div>
+        ) : null}
       </div>
     </nav>
   )

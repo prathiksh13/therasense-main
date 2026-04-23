@@ -16,6 +16,7 @@ import Card from '../components/ui/Card'
 import EmptyState from '../components/ui/EmptyState'
 import SectionHeader from '../components/ui/SectionHeader'
 import { useAuth } from '../context/AuthContext'
+import { useTabLoading } from '../context/TabLoadingContext'
 import { firestoreDb } from '../lib/firebase'
 
 const MIN_AI_COUNT = 5
@@ -188,6 +189,7 @@ function buildEncouragingInsights(assignment, answers = []) {
 export default function Assignments() {
   const { role, uid } = useAuth()
   const isTherapist = role === 'therapist'
+  const { setTabLoading } = useTabLoading()
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -210,6 +212,15 @@ export default function Assignments() {
   const [selectedAnswers, setSelectedAnswers] = useState({})
   const [submittingResponse, setSubmittingResponse] = useState(false)
   const [attemptStartedAtByAssignmentId, setAttemptStartedAtByAssignmentId] = useState({})
+
+  // Trigger loading state when assignment is selected
+  useEffect(() => {
+    if (activeAssignmentId) {
+      setTabLoading(true)
+      const timer = setTimeout(() => setTabLoading(false), 300)
+      return () => clearTimeout(timer)
+    }
+  }, [activeAssignmentId])
 
   const activeAssignment = useMemo(
     () => assignments.find((assignment) => assignment.id === activeAssignmentId) || null,

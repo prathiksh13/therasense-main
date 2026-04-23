@@ -1,16 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { PageTransitionContext } from '../context/PageTransitionContext'
 import { NAV_EXIT_DURATION_MS, pageCardContainerVariants, pageShellVariants } from '../lib/pageTransitionMotion'
+import LoadingScreen from '../components/LoadingScreen'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+import { TabLoadingContext } from '../context/TabLoadingContext'
 
 export default function Layout() {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
+  const [tabLoading, setTabLoading] = useState(false)
+  const transitionLoadingRef = useRef(false)
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     const stored = Number(window.localStorage.getItem('serien-sidebar-width') || 0)
     return Number.isFinite(stored) && stored >= 240 && stored <= 260 ? stored : 248
@@ -64,6 +68,15 @@ export default function Layout() {
 
   useEffect(() => {
     setIsLeaving(false)
+
+    if (!transitionLoadingRef.current) return
+
+    const timer = window.setTimeout(() => {
+      transitionLoadingRef.current = false
+      setTabLoading(false)
+    }, 300)
+
+    return () => window.clearTimeout(timer)
   }, [location.key])
 
   useEffect(() => {
@@ -84,6 +97,8 @@ export default function Layout() {
       window.clearTimeout(transitionTimeoutRef.current)
     }
 
+    transitionLoadingRef.current = true
+    setTabLoading(true)
     setIsLeaving(true)
 
     transitionTimeoutRef.current = window.setTimeout(() => {
@@ -101,43 +116,53 @@ export default function Layout() {
     navigateWithTransition,
   }), [isLeaving, navigateWithTransition])
 
+  const tabLoadingValue = useMemo(() => ({
+    tabLoading,
+    setTabLoading,
+  }), [tabLoading])
+
   return (
     <PageTransitionContext.Provider value={transitionValue}>
-      <div
-        className={`workspace-layout dashboard-shell ${collapsed ? 'is-collapsed' : ''}`}
-        style={{ '--sidebar-width': `${sidebarWidth}px` }}
-      >
-        <Sidebar
-          open={sidebarOpen}
-          collapsed={collapsed}
-          onClose={() => setSidebarOpen(false)}
-          onToggleCollapse={() => setCollapsed((prev) => !prev)}
-        />
-        <div className="workspace-layout__content dashboard-shell__content ts-main-content">
-          <Navbar />
-          <main className="dashboard-main">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={location.pathname}
-                className="page-transition"
-                variants={pageShellVariants}
-                initial="initial"
-                animate="enter"
-                exit="exit"
-              >
+      <TabLoadingContext.Provider value={tabLoadingValue}>
+        <div
+          className={`workspace-layout dashboard-shell ${collapsed ? 'is-collapsed' : ''}`}
+          style={{ '--sidebar-width': `${sidebarWidth}px` }}
+        >
+          <Sidebar
+            open={sidebarOpen}
+            collapsed={collapsed}
+            onClose={() => setSidebarOpen(false)}
+            onToggleCollapse={() => setCollapsed((prev) => !prev)}
+          />
+          <div className="workspace-layout__content dashboard-shell__content ts-main-content">
+            <Navbar />
+            <main className="dashboard-main">
+              {tabLoading && <LoadingScreen context="general" variant="tab-overlay" />}
+              <AnimatePresence mode="wait">
                 <motion.div
-                  className="ts-page-transition-cards"
-                  variants={pageCardContainerVariants}
+                  key={location.pathname}
+                  className="page-transition"
+                  variants={pageShellVariants}
                   initial="initial"
-                  animate={isLeaving ? 'exit' : 'enter'}
+                  animate="enter"
+                  exit="exit"
                 >
-                  <Outlet />
+                  <motion.div
+                    className="ts-page-transition-cards"
+                    variants={pageCardContainerVariants}
+                    initial="initial"
+                    animate={isLeaving ? 'exit' : 'enter'}
+                  >
+                    <Suspense fallback={<LoadingScreen context="general" variant="tab-overlay" />}>
+                      <Outlet />
+                    </Suspense>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            </AnimatePresence>
-          </main>
+              </AnimatePresence>
+            </main>
+          </div>
         </div>
-      </div>
+      </TabLoadingContext.Provider>
     </PageTransitionContext.Provider>
   )
 }

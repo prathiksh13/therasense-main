@@ -24,7 +24,7 @@ const MESSAGE_SETS = {
   ],
 }
 
-export default function LoadingScreen({ context = 'general' }) {
+export default function LoadingScreen({ context = 'general', variant = 'full' }) {
   const [messageIndex, setMessageIndex] = useState(0)
 
   const messages = useMemo(() => MESSAGE_SETS[context] || MESSAGE_SETS.general, [context])
@@ -42,19 +42,21 @@ export default function LoadingScreen({ context = 'general' }) {
   }, [messages])
 
   return (
-    <div className="ts-loading-screen" role="status" aria-live="polite" aria-label="Loading">
+    <div className={`ts-loading-screen ts-loading-screen--${variant}`} role="status" aria-live="polite" aria-label="Loading">
       <div className="ts-loading-screen__content">
-        <video
-          className="ts-loading-screen__video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src="/loading-loop.webm" type="video/webm" />
-          <source src="/loading-loop.mp4" type="video/mp4" />
-        </video>
+        <div className="ts-loading-screen__frame">
+          <video
+            className="ts-loading-screen__video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          >
+            <source src="/loading-loop.webm" type="video/webm" />
+            <source src="/loading-loop.mp4" type="video/mp4" />
+          </video>
+        </div>
 
         <div className="ts-loading-screen__message-wrap">
           <AnimatePresence mode="wait">

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppointmentForm from '../components/AppointmentForm'
 import Card from '../components/ui/Card'
@@ -7,6 +7,7 @@ import SessionCard, { normalizeSessionStatus } from '../components/SessionCard'
 import SearchBar from '../components/ui/SearchBar'
 import SectionHeader from '../components/ui/SectionHeader'
 import { useAuth } from '../context/AuthContext'
+import { useTabLoading } from '../context/TabLoadingContext'
 import usePatientWorkspaceData from '../hooks/usePatientWorkspaceData'
 import useTherapistWorkspaceData from '../hooks/useTherapistWorkspaceData'
 import { handleJoinCall } from '../utils/sessionCall'
@@ -38,6 +39,7 @@ export default function Sessions() {
   const isTherapist = role === 'therapist'
   const patientData = usePatientWorkspaceData()
   const therapistData = useTherapistWorkspaceData()
+  const { setTabLoading } = useTabLoading()
 
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -45,6 +47,16 @@ export default function Sessions() {
 
   const activeData = isTherapist ? therapistData : patientData
   const loading = authLoading || activeData.loading
+
+  // Trigger data refresh when status filter changes
+  useEffect(() => {
+    if (statusFilter !== 'all') {
+      setTabLoading(true)
+      if (activeData.refresh) {
+        activeData.refresh().finally(() => setTabLoading(false))
+      }
+    }
+  }, [statusFilter, activeData])
 
   const sessions = useMemo(() => {
     if (isTherapist) return therapistData.sessions
@@ -162,8 +174,6 @@ export default function Sessions() {
         </select>
       </div>
 
-      {loading ? <Card><p className="ts-text-secondary">Loading sessions...</p></Card> : null}
-
       {!loading ? (
         <>
           <section className="ts-stack">
@@ -212,7 +222,11 @@ export default function Sessions() {
             )}
           </section>
         </>
-      ) : null}
+      ) : (
+        <Card>
+          <p className="ts-text-secondary">Loading sessions...</p>
+        </Card>
+      )}
     </section>
   )
 }

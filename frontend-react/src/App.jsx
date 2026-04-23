@@ -39,13 +39,29 @@ export default function App() {
   const [loadingContext, setLoadingContext] = useState(getLoadingContext(location.pathname))
   const transitionTimeoutRef = useRef(null)
   const activePathname = displayLocation.pathname
-  const shouldShowLoading = authLoading || appState === 'loading'
-  const hideChatbot = activePathname === '/' || activePathname === '/login' || shouldShowLoading
+  const shouldShowBlockingLoading = authLoading
+  const shouldShowRouteLoading = !authLoading && appState === 'loading'
+  const hideChatbot = activePathname === '/' || activePathname === '/login' || authLoading
   const chatbotMode = activePathname.startsWith('/therapist') ? 'therapist' : 'patient'
   const routeFallback = useMemo(
     () => <div className="min-h-screen bg-transparent" aria-hidden="true" />,
     []
   )
+
+  useEffect(() => {
+    void import('./pages/Dashboard')
+    void import('./pages/Sessions')
+    void import('./pages/Reports')
+    void import('./pages/Profile')
+    void import('./pages/Resources')
+    void import('./pages/SettingsPage')
+    void import('./pages/Assignments')
+    void import('./pages/Journal')
+    void import('./pages/TherapistJournal')
+    void import('./pages/Patient')
+    void import('./pages/Therapist')
+    void import('./pages/VideoCall')
+  }, [])
 
   const transitionTo = useCallback((nextState, context = 'general', delayMs = 420) => {
     if (typeof nextState !== 'function') return
@@ -97,80 +113,83 @@ export default function App() {
 
   return (
     <div className="app-shell" data-theme-current={theme}>
-      {shouldShowLoading ? <LoadingScreen context={loadingContext} /> : null}
-      {!shouldShowLoading ? (
-      <Suspense fallback={routeFallback}>
-        <Routes location={displayLocation}>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
-          <Route
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/sessions" element={<Sessions />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/assignments" element={<Assignments />} />
-            <Route
-              path="/journal"
-              element={
-                <ProtectedRoute allowedRoles={['patient']}>
-                  <Journal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/therapist/journal"
-              element={
-                <ProtectedRoute allowedRoles={['therapist']}>
-                  <TherapistJournal />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
+      {shouldShowBlockingLoading ? <LoadingScreen context={loadingContext} variant="full" /> : null}
+      {!shouldShowBlockingLoading ? (
+        <>
+          <Suspense fallback={routeFallback}>
+            <Routes location={displayLocation}>
+              <Route path="/" element={<LandingPage />} />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                element={
+                  <ProtectedRoute allowedRoles={['patient', 'therapist']}>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/sessions" element={<Sessions />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/assignments" element={<Assignments />} />
+                <Route
+                  path="/journal"
+                  element={
+                    <ProtectedRoute allowedRoles={['patient']}>
+                      <Journal />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/therapist/journal"
+                  element={
+                    <ProtectedRoute allowedRoles={['therapist']}>
+                      <TherapistJournal />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
 
-          <Route
-            path="/patient"
-            element={
-              <ProtectedRoute allowedRoles={['patient']}>
-                <Patient />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/therapist"
-            element={
-              <ProtectedRoute allowedRoles={['therapist']}>
-                <Therapist />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/video-call/:roomId"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <VideoCall />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/patient-home" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/therapist-home" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+              <Route
+                path="/patient"
+                element={
+                  <ProtectedRoute allowedRoles={['patient']}>
+                    <Patient />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/therapist"
+                element={
+                  <ProtectedRoute allowedRoles={['therapist']}>
+                    <Therapist />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/video-call/:roomId"
+                element={
+                  <ProtectedRoute allowedRoles={['patient', 'therapist']}>
+                    <VideoCall />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/patient-home" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/therapist-home" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+          {shouldShowRouteLoading ? <LoadingScreen context={loadingContext} variant="overlay" /> : null}
+        </>
       ) : null}
       {!hideChatbot ? <Chatbot mode={chatbotMode} /> : null}
     </div>

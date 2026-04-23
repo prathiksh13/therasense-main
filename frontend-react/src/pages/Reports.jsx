@@ -6,6 +6,7 @@ import EmptyState from '../components/ui/EmptyState'
 import SearchBar from '../components/ui/SearchBar'
 import SectionHeader from '../components/ui/SectionHeader'
 import { useAuth } from '../context/AuthContext'
+import { useTabLoading } from '../context/TabLoadingContext'
 import { firestoreDb } from '../lib/firebase'
 import { generateReportPdfFromData } from '../utils/generatePDF'
 import { generateClinicalSessionReportPdf } from '../utils/generateClinicalSessionPdf'
@@ -178,6 +179,7 @@ function DocumentIcon() {
 export default function Reports() {
   const { role, uid, loading: authLoading } = useAuth()
   const isTherapist = role === 'therapist'
+  const { setTabLoading } = useTabLoading()
 
   const [search, setSearch] = useState('')
   const [reports, setReports] = useState([])
@@ -187,6 +189,15 @@ export default function Reports() {
   const [selectedEmotions, setSelectedEmotions] = useState([])
   const [therapistNotes, setTherapistNotes] = useState('')
   const [savingNotes, setSavingNotes] = useState(false)
+
+  // Trigger loading state when report is selected
+  useEffect(() => {
+    if (activeTherapistReport) {
+      setTabLoading(true)
+      const timer = setTimeout(() => setTabLoading(false), 300)
+      return () => clearTimeout(timer)
+    }
+  }, [activeTherapistReport])
 
   useEffect(() => {
     if (!uid || (role !== 'patient' && role !== 'therapist')) return undefined
