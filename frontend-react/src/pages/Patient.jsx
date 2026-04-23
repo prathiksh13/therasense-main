@@ -414,9 +414,6 @@ export default function Patient() {
   }
 
   useEffect(() => {
-    const socket = io("https://serien-model.onrender.com", {
-  transports: ["websocket"],
-})
 
     socketRef.current = socket
     sessionIdRef.current = getSessionId()
