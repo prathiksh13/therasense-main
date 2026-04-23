@@ -1,6 +1,7 @@
-import { lazy, Suspense, useMemo } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Chatbot from './components/Chatbot'
+import LoadingScreen from './components/LoadingScreen'
 import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './layout/Layout'
@@ -22,23 +23,84 @@ const TherapistJournal = lazy(() => import('./pages/TherapistJournal'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const Assignments = lazy(() => import('./pages/Assignments'))
 
+function getLoadingContext(pathname) {
+  if (pathname === '/login' || pathname === '/') return 'login'
+  if (pathname.startsWith('/video-call') || pathname === '/patient' || pathname === '/therapist') return 'call'
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/sessions') || pathname.startsWith('/reports')) return 'dashboard'
+  return 'general'
+}
+
 export default function App() {
   const { theme } = useTheme()
   const { loading: authLoading } = useAuth()
   const location = useLocation()
-  const hideChatbot = location.pathname === '/' || location.pathname === '/login'
-  const chatbotMode = location.pathname.startsWith('/therapist') ? 'therapist' : 'patient'
+  const [appState, setAppState] = useState('ready')
+  const [displayLocation, setDisplayLocation] = useState(location)
+  const [loadingContext, setLoadingContext] = useState(getLoadingContext(location.pathname))
+  const transitionTimeoutRef = useRef(null)
+  const activePathname = displayLocation.pathname
+  const shouldShowLoading = authLoading || appState === 'loading'
+  const hideChatbot = activePathname === '/' || activePathname === '/login' || shouldShowLoading
+  const chatbotMode = activePathname.startsWith('/therapist') ? 'therapist' : 'patient'
   const routeFallback = useMemo(
     () => <div className="min-h-screen bg-transparent" aria-hidden="true" />,
     []
   )
 
+  const transitionTo = useCallback((nextState, context = 'general', delayMs = 420) => {
+    if (typeof nextState !== 'function') return
+
+    if (transitionTimeoutRef.current) {
+      window.clearTimeout(transitionTimeoutRef.current)
+    }
+
+    setLoadingContext(context)
+    setAppState('loading')
+
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      nextState()
+      setAppState('ready')
+    }, delayMs)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current) {
+        window.clearTimeout(transitionTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (authLoading) {
+      setLoadingContext(getLoadingContext(location.pathname))
+      setAppState('loading')
+      return
+    }
+
+    const skipGlobalLoader = Boolean(location.state?.skipGlobalLoader)
+
+    if (location.key !== displayLocation.key) {
+      if (skipGlobalLoader) {
+        setLoadingContext(getLoadingContext(location.pathname))
+        setDisplayLocation(location)
+        setAppState('ready')
+        return
+      }
+
+      transitionTo(() => setDisplayLocation(location), getLoadingContext(location.pathname), 420)
+      return
+    }
+
+    setAppState('ready')
+  }, [authLoading, displayLocation.key, location, transitionTo])
+
   return (
     <div className="app-shell" data-theme-current={theme}>
-      {authLoading ? routeFallback : null}
-      {!authLoading ? (
+      {shouldShowLoading ? <LoadingScreen context={loadingContext} /> : null}
+      {!shouldShowLoading ? (
       <Suspense fallback={routeFallback}>
-        <Routes>
+        <Routes location={displayLocation}>
           <Route path="/" element={<LandingPage />} />
           <Route
             path="/login"
@@ -49,25 +111,37 @@ export default function App() {
             }
           />
           <Route
-            path="/dashboard"
             element={
               <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Dashboard />
-                </Layout>
+                <Layout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/sessions"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Sessions />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/sessions" element={<Sessions />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/assignments" element={<Assignments />} />
+            <Route
+              path="/journal"
+              element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                  <Journal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/therapist/journal"
+              element={
+                <ProtectedRoute allowedRoles={['therapist']}>
+                  <TherapistJournal />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
           <Route
             path="/patient"
             element={
@@ -89,76 +163,6 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={['patient', 'therapist']}>
                 <VideoCall />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Reports />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Profile />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/resources"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Resources />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/journal"
-            element={
-              <ProtectedRoute allowedRoles={['patient']}>
-                <Layout>
-                  <Journal />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <SettingsPage />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/assignments"
-            element={
-              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
-                <Layout>
-                  <Assignments />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/therapist/journal"
-            element={
-              <ProtectedRoute allowedRoles={['therapist']}>
-                <Layout>
-                  <TherapistJournal />
-                </Layout>
               </ProtectedRoute>
             }
           />

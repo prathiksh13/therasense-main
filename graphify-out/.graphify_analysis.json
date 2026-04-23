@@ -1,0 +1,791 @@
+{
+  "communities": {
+    "0": [
+      "server_booksessionfromchat",
+      "server_buildemaillayout",
+      "server_buildoptionalpdfattachment",
+      "server_buildsessioninfoblock",
+      "server_chathandler",
+      "server_choosetherapistforbooking",
+      "server_combinedateandtime",
+      "server_detectmediakind",
+      "server_emitsessionstate",
+      "server_escapehtml",
+      "server_extractjsonarray",
+      "server_formatdatetime",
+      "server_formatsessiondatetime",
+      "server_generateassignmentquestionswithllama",
+      "server_generategroqreply",
+      "server_getllamasystemprompt",
+      "server_getnextweekdaydate",
+      "server_getsession",
+      "server_getsessionlink",
+      "server_getsessionstate",
+      "server_getsystemprompt",
+      "server_getuserprofile",
+      "server_isbookingintent",
+      "server_isbucketmissingerror",
+      "server_js",
+      "server_normalizegroqmodel",
+      "server_normalizesummary",
+      "server_oppositerole",
+      "server_parsebookingdate",
+      "server_parsebookingtime",
+      "server_registersessionpeer",
+      "server_routesignal",
+      "server_sanitizefilename",
+      "server_sanitizemcqquestions",
+      "server_sendbookingemailbysession",
+      "server_sendemail",
+      "server_sendemergencyemail",
+      "server_sendreminderemailbysession",
+      "server_sendreportemailsbypayload",
+      "server_sendtherapistfollowupemail",
+      "server_tomapslink",
+      "server_unregistersessionpeer",
+      "server_verifychatuser",
+      "server_wait"
+    ],
+    "1": [
+      "auth_getdashboardpath",
+      "auth_getuserrole",
+      "authcontext_authprovider",
+      "authcontext_useauth",
+      "frontend_react_src_components_navbar_jsx",
+      "frontend_react_src_components_protectedroute_jsx",
+      "frontend_react_src_components_publicroute_jsx",
+      "frontend_react_src_components_videocall_jsx",
+      "frontend_react_src_context_authcontext_jsx",
+      "frontend_react_src_hooks_useuserrole_js",
+      "frontend_react_src_layout_navbar_jsx",
+      "frontend_react_src_pages_profile_jsx",
+      "frontend_react_src_pages_settingspage_jsx",
+      "frontend_react_src_pages_therapistjournal_jsx",
+      "frontend_react_src_pages_videocall_jsx",
+      "frontend_react_src_utils_auth_js",
+      "journal_journal",
+      "navbar_getpagetitle",
+      "navbar_navbar",
+      "profile_mailicon",
+      "profile_phoneicon",
+      "profile_pinicon",
+      "profile_profile",
+      "profile_usericon",
+      "protectedroute_protectedroute",
+      "publicroute_publicroute",
+      "reports_reports",
+      "settingspage_bellicon",
+      "settingspage_lockicon",
+      "settingspage_settingspage",
+      "therapistjournal_avatarfromname",
+      "therapistjournal_filekind",
+      "therapistjournal_formatjournaldate",
+      "therapistjournal_normalizemoodvalue",
+      "therapistjournal_resolvemediakind",
+      "therapistjournal_resolvemediasrc",
+      "therapistjournal_therapistjournal",
+      "useuserrole_useuserrole",
+      "videocall_videocall"
+    ],
+    "2": [
+      "AnalyticsReport_feature",
+      "EmotionDetection_feature",
+      "EmotionModel",
+      "Emotion_model",
+      "FaceAPI",
+      "Firestore",
+      "Journal",
+      "JournalEntry_model",
+      "JournalPrompt_feature",
+      "LandingPage",
+      "PatientDashboard",
+      "PatientHome",
+      "Patient_page",
+      "Patient_role",
+      "Profile",
+      "ProfilePage",
+      "Recharts",
+      "Report_model",
+      "Reports",
+      "Session_model",
+      "Sessions",
+      "SettingsPage",
+      "SocketIO",
+      "TheraSense",
+      "TherapistDashboard",
+      "TherapistHome",
+      "TherapistJournal",
+      "TherapistReports",
+      "Therapist_page",
+      "Therapist_role",
+      "UserProfile_model",
+      "VideoCall",
+      "VideoCall_feature",
+      "WebRTC",
+      "frontend_react_src_components_graph_jsx",
+      "graph_emotiongraph"
+    ],
+    "3": [
+      "comp_badge",
+      "comp_buttons",
+      "comp_navbar",
+      "comp_notifications_bell",
+      "comp_patient_journal",
+      "comp_pre_session_form",
+      "comp_profile_menu",
+      "comp_protected_route",
+      "comp_public_route",
+      "comp_report",
+      "comp_report_list",
+      "comp_session_card",
+      "comp_session_list",
+      "comp_session_report_card",
+      "comp_session_timeline_replay",
+      "comp_sidebar",
+      "comp_theme_toggle",
+      "comp_therapist_messenger",
+      "comp_therapist_notes",
+      "comp_video_call",
+      "comp_video_controls",
+      "ctx_auth",
+      "ctx_theme",
+      "data_emotion",
+      "data_journal_entry",
+      "data_message",
+      "data_report",
+      "data_session",
+      "lib_chartjs",
+      "lib_firebase",
+      "lib_react_router",
+      "util_analyze_emotions",
+      "util_auth_helpers",
+      "util_normalize_session"
+    ],
+    "4": [
+      "advanced_report",
+      "analyze_emotions",
+      "backend_node",
+      "brain_scene",
+      "chatbot_ui",
+      "clinical_pdf",
+      "cron_reminder",
+      "dashboard",
+      "emotion_model",
+      "emotion_timeline",
+      "face_api",
+      "flask_service",
+      "frontend_react",
+      "gemini_api",
+      "gemini_service",
+      "generate_pdf",
+      "groq_api",
+      "journal_module",
+      "ngrok_tunnel",
+      "patient_role",
+      "report_builder",
+      "report_entity",
+      "risk_assessment",
+      "session_analytics",
+      "smtp_provider",
+      "socket_io",
+      "socket_lib",
+      "stress_score",
+      "therapist_role",
+      "therasense",
+      "use_demo_signaling",
+      "video_call_page",
+      "webrtc"
+    ],
+    "5": [
+      "auth_utils",
+      "firebase_auth",
+      "firestore",
+      "frontend_react_src_components_patientjournal_jsx",
+      "frontend_react_src_components_presessionform_jsx",
+      "frontend_react_src_components_therapistnotes_jsx",
+      "frontend_react_src_lib_firebase_js",
+      "frontend_react_src_pages_login_jsx",
+      "frontend_react_src_pages_patienthome_jsx",
+      "frontend_react_src_pages_profilepage_jsx",
+      "frontend_react_src_pages_therapisthome_jsx",
+      "frontend_react_src_utils_sessioncall_js",
+      "login_envelopeicon",
+      "login_getfirebaseauthmessage",
+      "login_googleicon",
+      "login_hearticon",
+      "login_lockicon",
+      "login_login",
+      "login_shieldicon",
+      "patienthome_downloadtextfile",
+      "patienthome_patienthome",
+      "patientjournal_patientjournal",
+      "presessionform_presessionform",
+      "profilepage_profilepage",
+      "session_call",
+      "session_entity",
+      "sessioncall_getsessionbyid",
+      "sessioncall_handlejoincall",
+      "sessioncall_normalizecallstatus",
+      "therapisthome_downloadtextfile",
+      "therapisthome_therapisthome",
+      "therapistnotes_therapistnotes",
+      "user_entity"
+    ],
+    "6": [
+      "frontend_react_src_components_notificationsbell_jsx",
+      "frontend_react_src_components_sessionreportcard_jsx",
+      "frontend_react_src_components_therapistmessenger_jsx",
+      "frontend_react_src_pages_reports_jsx",
+      "frontend_react_src_utils_generatepdf_js",
+      "generatepdf_applypdfsafestyles",
+      "generatepdf_generatereportpdf",
+      "generatepdf_generatereportpdffromdata",
+      "notificationsbell_isupcomingsoon",
+      "notificationsbell_notificationsbell",
+      "reports_buildemotionpoints",
+      "reports_buildjourneypoints",
+      "reports_buildpatientinsight",
+      "reports_buildtherapistinsights",
+      "reports_calculateemotionpercentages",
+      "reports_documenticon",
+      "reports_emotionaljourneygraph",
+      "reports_formatdatelabel",
+      "reports_getdominantemotion",
+      "reports_getpositivesummary",
+      "reports_gettopemotions",
+      "reports_parsereportpayload",
+      "reports_safenumber",
+      "reports_simpleemotiongraph",
+      "reports_todate",
+      "sessionreportcard_risktone",
+      "sessionreportcard_sessionreportcard",
+      "therapistmessenger_avatartext",
+      "therapistmessenger_buildconversationid",
+      "therapistmessenger_formatmessagedate",
+      "therapistmessenger_formatmessagetime",
+      "therapistmessenger_therapistmessenger"
+    ],
+    "7": [
+      "advanced_report_insights",
+      "app_flask_server",
+      "app_root_component",
+      "appointment_form_component",
+      "call_topbar_component",
+      "chat_widget_component",
+      "chat_window_component",
+      "chatbot_component",
+      "dashboard_component",
+      "dashboard_shell_layout",
+      "emergency_button_component",
+      "emotion_confidence_graph",
+      "emotion_graph_component",
+      "emotion_history_store",
+      "emotion_labels_mapping",
+      "emotion_panel_component",
+      "facial_emotion_model",
+      "firebase_integration",
+      "gemini_api_client",
+      "groq_llm_client",
+      "keras_cnn_layers",
+      "main_entry_point",
+      "message_bubble_component",
+      "opencv_face_detector",
+      "realtimedetection_emotion_detector",
+      "server_express_app",
+      "socket_io_realtime",
+      "test_model_validator",
+      "theme_context",
+      "toggle_component",
+      "vite_config"
+    ],
+    "8": [
+      "dashboard_activityitem",
+      "dashboard_dashboard",
+      "dashboard_statcard",
+      "frontend_react_src_components_dashboard_jsx",
+      "frontend_react_src_components_sidebar_jsx",
+      "frontend_react_src_hooks_usepatientworkspacedata_js",
+      "frontend_react_src_hooks_usetherapistworkspacedata_js",
+      "frontend_react_src_layout_sidebar_jsx",
+      "frontend_react_src_pages_dashboard_jsx",
+      "frontend_react_src_pages_sessions_jsx",
+      "frontend_react_src_pages_therapistreports_jsx",
+      "frontend_react_src_pages_therapistsessions_jsx",
+      "sessions_calendaricon",
+      "sessions_parsesessiondate",
+      "sessions_sessions",
+      "sidebar_isactivepath",
+      "sidebar_sidebar",
+      "therapistreports_parsereportdetails",
+      "therapistreports_therapistreports",
+      "therapistsessions_therapistsessions",
+      "usepatientworkspacedata_parsereportpayload",
+      "usepatientworkspacedata_usepatientworkspacedata",
+      "usetherapistworkspacedata_mapreport",
+      "usetherapistworkspacedata_normalizestatus",
+      "usetherapistworkspacedata_usetherapistworkspacedata"
+    ],
+    "9": [
+      "frontend_react_src_hooks_usedraggablepip_js",
+      "frontend_react_src_pages_patient_jsx",
+      "frontend_react_src_pages_therapist_jsx",
+      "patient_attachstreamtovideo",
+      "patient_getsessionid",
+      "patient_logpeerstate",
+      "patient_patient",
+      "therapist_attachstreamtovideo",
+      "therapist_checkurl",
+      "therapist_drawemotiontag",
+      "therapist_ensurefaceapiloaded",
+      "therapist_formatnow",
+      "therapist_getsessionid",
+      "therapist_gettopemotion",
+      "therapist_logpeerstate",
+      "therapist_pad",
+      "therapist_resolvefaceapiendpoints",
+      "therapist_therapist",
+      "therapist_withtimeout",
+      "usedraggablepip_clamp",
+      "usedraggablepip_usedraggablepip"
+    ],
+    "10": [
+      "assignments_page",
+      "auth_context",
+      "card_component",
+      "dashboard_page",
+      "empty_state_component",
+      "firebase_lib",
+      "firebase_service",
+      "firestore_db",
+      "layout_component",
+      "navbar_component",
+      "section_header_component",
+      "sidebar_component",
+      "use_draggable_pip",
+      "use_patient_workspace_data",
+      "use_therapist_workspace_data",
+      "use_user_role"
+    ],
+    "11": [
+      "frontend_react_src_utils_generateclinicalsessionpdf_js",
+      "generateclinicalsessionpdf_buildlinechartimage",
+      "generateclinicalsessionpdf_buildpiechartimage",
+      "generateclinicalsessionpdf_buildtimelineinsights",
+      "generateclinicalsessionpdf_drawdivider",
+      "generateclinicalsessionpdf_drawsectiontitle",
+      "generateclinicalsessionpdf_drawtintbox",
+      "generateclinicalsessionpdf_generateclinicalsessionreportpdf",
+      "generateclinicalsessionpdf_inferrisklevel",
+      "generateclinicalsessionpdf_infersuggestedactions",
+      "generateclinicalsessionpdf_mmtopx",
+      "generateclinicalsessionpdf_safenumber",
+      "generateclinicalsessionpdf_sanitizepoints"
+    ],
+    "12": [
+      "assignments_assignments",
+      "assignments_buildencouraginginsights",
+      "assignments_buildinsightsummary",
+      "assignments_calculatereflectionscore",
+      "assignments_clipboardicon",
+      "assignments_formatduration",
+      "assignments_getanswerratiobypattern",
+      "assignments_getscorelabel",
+      "assignments_normalizequestionshape",
+      "assignments_normalizetext",
+      "frontend_react_src_pages_assignments_jsx"
+    ],
+    "13": [
+      "frontend_react_src_pages_journal_jsx",
+      "journal_filekind",
+      "journal_filetobase64",
+      "journal_formatjournaldate",
+      "journal_getmoodmeta",
+      "journal_journalicon",
+      "journal_normalizemoodvalue",
+      "journal_resolvemediakind",
+      "journal_resolvemediasrc",
+      "journal_touploaderrormessage",
+      "journal_uploadjournalmedia"
+    ],
+    "14": [
+      "frontend_react_src_utils_reportbuilder_js",
+      "reportbuilder_buildaisummary",
+      "reportbuilder_buildrisklabel",
+      "reportbuilder_buildstressseries",
+      "reportbuilder_buildsuggestions",
+      "reportbuilder_buildtherasensereport",
+      "reportbuilder_clamp",
+      "reportbuilder_computeaverage",
+      "reportbuilder_getdominantemotion",
+      "reportbuilder_resolvepriorityemotion",
+      "reportbuilder_safepercent"
+    ],
+    "15": [
+      "app_app",
+      "frontend_react_src_app_jsx",
+      "frontend_react_src_components_themetoggle_jsx",
+      "frontend_react_src_context_themecontext_jsx",
+      "server_createfirebaseadminapp",
+      "server_getstoragebucketcandidates",
+      "themecontext_themeprovider",
+      "themecontext_usetheme",
+      "themetoggle_themetoggle"
+    ],
+    "16": [
+      "brainscene_brainscene",
+      "brainscene_modelerrorboundary",
+      "brainscene_modelerrorboundary_componentdidcatch",
+      "brainscene_modelerrorboundary_constructor",
+      "brainscene_modelerrorboundary_getderivedstatefromerror",
+      "brainscene_modelerrorboundary_render",
+      "brainscene_neuralnetwork",
+      "frontend_react_src_three_brainscene_jsx"
+    ],
+    "17": [
+      "advancedreport_buildadvancedreport",
+      "advancedreport_getdominantemotion",
+      "advancedreport_getrecommendations",
+      "advancedreport_getrisklevel",
+      "advancedreport_scorefromemotionlabel",
+      "advancedreport_scorefromexpressions",
+      "advancedreport_summarizetrend",
+      "frontend_react_src_utils_advancedreport_js"
+    ],
+    "18": [
+      "app_add_cors_headers",
+      "app_build_graph_png",
+      "app_emotion_graph",
+      "app_health",
+      "app_py",
+      "app_rationale_23",
+      "app_update_emotion"
+    ],
+    "19": [
+      "frontend_react_src_components_videocontrols_jsx",
+      "videocontrols_cameraicon",
+      "videocontrols_endcallicon",
+      "videocontrols_micicon",
+      "videocontrols_notesicon",
+      "videocontrols_reporticon",
+      "videocontrols_videocontrols"
+    ],
+    "20": [
+      "frontend_react_src_hooks_usedemosignaling_js",
+      "frontend_react_src_pages_patientdashboard_jsx",
+      "frontend_react_src_pages_therapistdashboard_jsx",
+      "patientdashboard_patientdashboard",
+      "therapistdashboard_builddemotimeline",
+      "therapistdashboard_therapistdashboard",
+      "usedemosignaling_usedemosignaling"
+    ],
+    "21": [
+      "frontend_react_src_components_sessioncard_jsx",
+      "sessioncard_cameraicon",
+      "sessioncard_clockicon",
+      "sessioncard_normalizesessionstatus",
+      "sessioncard_sessioncard",
+      "sessioncard_statuslabel"
+    ],
+    "22": [
+      "brainmodel_brainfallbackmesh",
+      "brainmodel_brainmodel",
+      "brainmodel_brainmodelloaded",
+      "brainmodel_safepreloadbrainmodel",
+      "frontend_react_src_three_brainmodel_jsx"
+    ],
+    "23": [
+      "frontend_react_src_utils_sessionanalytics_js",
+      "sessionanalytics_buildsessionmetadata",
+      "sessionanalytics_calculatestressscore",
+      "sessionanalytics_clamp",
+      "sessionanalytics_derivemoodstate"
+    ],
+    "24": [
+      "appointmentform_appointmentform",
+      "appointmentform_formatdatelabel",
+      "appointmentform_formattimelabel",
+      "frontend_react_src_components_appointmentform_jsx"
+    ],
+    "25": [
+      "chatbot_buildwelcomemessage",
+      "chatbot_chatbot",
+      "chatbot_resolvedetectedemotion",
+      "frontend_react_src_components_chatbot_jsx"
+    ],
+    "26": [
+      "frontend_react_src_components_report_jsx",
+      "report_getstabilitylevel",
+      "report_getstatecolorhex",
+      "report_report"
+    ],
+    "27": [
+      "calltopbar_calltopbar",
+      "calltopbar_chevronlefticon",
+      "frontend_react_src_components_calltopbar_jsx"
+    ],
+    "28": [
+      "frontend_react_src_components_sessiontimelinereplay_jsx",
+      "sessiontimelinereplay_normalizetimeline",
+      "sessiontimelinereplay_sessiontimelinereplay"
+    ],
+    "29": [
+      "buttons_greenbutton",
+      "buttons_outlinebutton",
+      "frontend_react_src_components_ui_buttons_jsx"
+    ],
+    "30": [
+      "frontend_react_src_lib_geminiapi_js",
+      "geminiapi_getsystemprompt",
+      "geminiapi_sendgeminimessage"
+    ],
+    "31": [
+      "analyzeemotions_analyzeemotions",
+      "analyzeemotions_formatsessionduration",
+      "frontend_react_src_utils_analyzeemotions_js"
+    ],
+    "32": [
+      "face_emotion_recognition_realtimedetection_py",
+      "realtimedetection_extract_features"
+    ],
+    "33": [
+      "advancedreportinsights_advancedreportinsights",
+      "frontend_react_src_components_advancedreportinsights_jsx"
+    ],
+    "34": [
+      "chatwidget_chatwidget",
+      "frontend_react_src_components_chatwidget_jsx"
+    ],
+    "35": [
+      "chatwindow_chatwindow",
+      "frontend_react_src_components_chatwindow_jsx"
+    ],
+    "36": [
+      "dashboardshell_dashboardshell",
+      "frontend_react_src_components_dashboardshell_jsx"
+    ],
+    "37": [
+      "emergencybutton_emergencybutton",
+      "frontend_react_src_components_emergencybutton_jsx"
+    ],
+    "38": [
+      "emotionpanel_emotionpanel",
+      "frontend_react_src_components_emotionpanel_jsx"
+    ],
+    "39": [
+      "frontend_react_src_components_messagebubble_jsx",
+      "messagebubble_messagebubble"
+    ],
+    "40": [
+      "frontend_react_src_components_profilemenu_jsx",
+      "profilemenu_profilemenu"
+    ],
+    "41": [
+      "frontend_react_src_components_reportlist_jsx",
+      "reportlist_reportlist"
+    ],
+    "42": [
+      "frontend_react_src_components_sessionlist_jsx",
+      "sessionlist_sessionlist"
+    ],
+    "43": [
+      "badge_badge",
+      "frontend_react_src_components_ui_badge_jsx"
+    ],
+    "44": [
+      "card_card",
+      "frontend_react_src_components_ui_card_jsx"
+    ],
+    "45": [
+      "emptystate_emptystate",
+      "frontend_react_src_components_ui_emptystate_jsx"
+    ],
+    "46": [
+      "frontend_react_src_components_ui_searchbar_jsx",
+      "searchbar_searchbar"
+    ],
+    "47": [
+      "frontend_react_src_components_ui_sectionheader_jsx",
+      "sectionheader_sectionheader"
+    ],
+    "48": [
+      "frontend_react_src_components_ui_toggle_jsx",
+      "toggle_toggle"
+    ],
+    "49": [
+      "frontend_react_src_layout_layout_jsx",
+      "layout_layout"
+    ],
+    "50": [
+      "frontend_react_src_pages_landingpage_jsx",
+      "landingpage_landingpage"
+    ],
+    "51": [
+      "frontend_react_src_pages_resources_jsx",
+      "resources_resources"
+    ],
+    "52": [
+      "postcss_config",
+      "tailwind_theme"
+    ],
+    "53": [
+      "FirebaseAuth",
+      "Login"
+    ],
+    "54": [
+      "BrainModel",
+      "ReactThreeFiber"
+    ],
+    "55": [
+      "face_emotion_recognition_test_model_py"
+    ],
+    "56": [
+      "frontend_react_postcss_config_js"
+    ],
+    "57": [
+      "frontend_react_tailwind_config_js"
+    ],
+    "58": [
+      "frontend_react_vite_config_js"
+    ],
+    "59": [
+      "frontend_react_src_main_jsx"
+    ],
+    "60": [
+      "frontend_react_src_data_mockdata_js"
+    ],
+    "61": [
+      "frontend_react_src_lib_socket_js"
+    ],
+    "62": [
+      "frontend_react_src_pages_loginpage_jsx"
+    ],
+    "63": [
+      "search_bar_component"
+    ],
+    "64": [
+      "mock_data"
+    ],
+    "65": [
+      "TherapistSessions"
+    ],
+    "66": [
+      "Resources"
+    ],
+    "67": [
+      "Firebase"
+    ],
+    "68": [
+      "face_emotion_ml"
+    ]
+  },
+  "cohesion": {},
+  "god_nodes": [
+    {
+      "id": "reports_todate",
+      "label": "toDate()",
+      "degree": 15
+    },
+    {
+      "id": "server_booksessionfromchat",
+      "label": "bookSessionFromChat()",
+      "degree": 11
+    },
+    {
+      "id": "server_sendreportemailsbypayload",
+      "label": "sendReportEmailsByPayload()",
+      "degree": 10
+    },
+    {
+      "id": "authcontext_useauth",
+      "label": "useAuth()",
+      "degree": 10
+    },
+    {
+      "id": "generateclinicalsessionpdf_generateclinicalsessionreportpdf",
+      "label": "generateClinicalSessionReportPdf()",
+      "degree": 9
+    },
+    {
+      "id": "reportbuilder_buildtherasensereport",
+      "label": "buildTheraSenseReport()",
+      "degree": 9
+    },
+    {
+      "id": "server_express_app",
+      "label": "Express Server",
+      "degree": 9
+    },
+    {
+      "id": "server_sendbookingemailbysession",
+      "label": "sendBookingEmailBySession()",
+      "degree": 8
+    },
+    {
+      "id": "server_sendreminderemailbysession",
+      "label": "sendReminderEmailBySession()",
+      "degree": 8
+    },
+    {
+      "id": "useuserrole_useuserrole",
+      "label": "useUserRole()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "parseReportPayload()",
+      "target": "toDate()",
+      "source_files": [
+        "frontend-react\\src\\hooks\\usePatientWorkspaceData.js",
+        "frontend-react\\src\\pages\\Reports.jsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `parseReportPayload()` unexpectedly reaches hub `toDate()`"
+    },
+    {
+      "source": "mapReport()",
+      "target": "toDate()",
+      "source_files": [
+        "frontend-react\\src\\hooks\\useTherapistWorkspaceData.js",
+        "frontend-react\\src\\pages\\Reports.jsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `mapReport()` unexpectedly reaches hub `toDate()`"
+    },
+    {
+      "source": "formatJournalDate()",
+      "target": "toDate()",
+      "source_files": [
+        "frontend-react\\src\\pages\\Journal.jsx",
+        "frontend-react\\src\\pages\\Reports.jsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `formatJournalDate()` unexpectedly reaches hub `toDate()`"
+    },
+    {
+      "source": "parseSessionDate()",
+      "target": "toDate()",
+      "source_files": [
+        "frontend-react\\src\\pages\\Sessions.jsx",
+        "frontend-react\\src\\pages\\Reports.jsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `parseSessionDate()` unexpectedly reaches hub `toDate()`"
+    },
+    {
+      "source": "formatJournalDate()",
+      "target": "toDate()",
+      "source_files": [
+        "frontend-react\\src\\pages\\TherapistJournal.jsx",
+        "frontend-react\\src\\pages\\Reports.jsx"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `formatJournalDate()` unexpectedly reaches hub `toDate()`"
+    }
+  ]
+}

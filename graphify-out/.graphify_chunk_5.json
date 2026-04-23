@@ -1,0 +1,616 @@
+{
+  "nodes": [
+    {
+      "id": "therasense",
+      "label": "TheraSense Platform",
+      "file_type": "document"
+    },
+    {
+      "id": "frontend_react",
+      "label": "React Frontend (Vite)",
+      "file_type": "code"
+    },
+    {
+      "id": "backend_node",
+      "label": "Node.js/Express Backend",
+      "file_type": "code"
+    },
+    {
+      "id": "firebase_auth",
+      "label": "Firebase Authentication",
+      "file_type": "code"
+    },
+    {
+      "id": "firestore",
+      "label": "Cloud Firestore Database",
+      "file_type": "code"
+    },
+    {
+      "id": "socket_io",
+      "label": "Socket.IO Real-time Signaling",
+      "file_type": "code"
+    },
+    {
+      "id": "webrtc",
+      "label": "WebRTC Peer Media",
+      "file_type": "code"
+    },
+    {
+      "id": "face_api",
+      "label": "face-api.js Emotion Detection",
+      "file_type": "code"
+    },
+    {
+      "id": "brain_scene",
+      "label": "BrainScene 3D Visualization",
+      "file_type": "code"
+    },
+    {
+      "id": "report_builder",
+      "label": "Report Building Module",
+      "file_type": "code"
+    },
+    {
+      "id": "analyze_emotions",
+      "label": "Emotion Analysis Utility",
+      "file_type": "code"
+    },
+    {
+      "id": "session_call",
+      "label": "Session Call Manager",
+      "file_type": "code"
+    },
+    {
+      "id": "session_analytics",
+      "label": "Session Analytics Module",
+      "file_type": "code"
+    },
+    {
+      "id": "advanced_report",
+      "label": "Advanced Report Insights",
+      "file_type": "code"
+    },
+    {
+      "id": "generate_pdf",
+      "label": "PDF Generation Module",
+      "file_type": "code"
+    },
+    {
+      "id": "clinical_pdf",
+      "label": "Clinical Session PDF Generator",
+      "file_type": "code"
+    },
+    {
+      "id": "auth_utils",
+      "label": "Authentication Utilities",
+      "file_type": "code"
+    },
+    {
+      "id": "groq_api",
+      "label": "Groq LLaMA Chat API",
+      "file_type": "code"
+    },
+    {
+      "id": "gemini_api",
+      "label": "Google Gemini API",
+      "file_type": "code"
+    },
+    {
+      "id": "smtp_provider",
+      "label": "SMTP Email Provider",
+      "file_type": "code"
+    },
+    {
+      "id": "face_emotion_ml",
+      "label": "Face Emotion ML Module",
+      "file_type": "code"
+    },
+    {
+      "id": "emotion_model",
+      "label": "Emotion Detection Model",
+      "file_type": "code"
+    },
+    {
+      "id": "user_entity",
+      "label": "User Entity",
+      "file_type": "code"
+    },
+    {
+      "id": "session_entity",
+      "label": "Session Entity",
+      "file_type": "code"
+    },
+    {
+      "id": "report_entity",
+      "label": "Report Entity",
+      "file_type": "code"
+    },
+    {
+      "id": "therapist_role",
+      "label": "Therapist Role",
+      "file_type": "document"
+    },
+    {
+      "id": "patient_role",
+      "label": "Patient Role",
+      "file_type": "document"
+    },
+    {
+      "id": "emotion_timeline",
+      "label": "Emotion Timeline Data",
+      "file_type": "code"
+    },
+    {
+      "id": "stress_score",
+      "label": "Stress Score Calculation",
+      "file_type": "code"
+    },
+    {
+      "id": "risk_assessment",
+      "label": "Risk Level Assessment",
+      "file_type": "code"
+    },
+    {
+      "id": "journal_module",
+      "label": "Journal Management Module",
+      "file_type": "code"
+    },
+    {
+      "id": "chatbot_ui",
+      "label": "Chatbot UI Component",
+      "file_type": "code"
+    },
+    {
+      "id": "dashboard",
+      "label": "Role-based Dashboard",
+      "file_type": "code"
+    },
+    {
+      "id": "video_call_page",
+      "label": "Video Call Session Page",
+      "file_type": "code"
+    },
+    {
+      "id": "flask_service",
+      "label": "Flask Emotion Graph Service",
+      "file_type": "code"
+    },
+    {
+      "id": "cron_reminder",
+      "label": "Cron-based Reminder Service",
+      "file_type": "code"
+    },
+    {
+      "id": "ngrok_tunnel",
+      "label": "Ngrok Public Tunnel",
+      "file_type": "document"
+    }
+  ],
+  "edges": [
+    {
+      "source": "therasense",
+      "target": "frontend_react",
+      "relation": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "therasense",
+      "target": "backend_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "firebase_auth",
+      "relation": "authenticates_via",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "firestore",
+      "relation": "reads_writes_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "socket_io",
+      "relation": "connects_via_websocket",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "face_api",
+      "relation": "loads_from_backend",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "brain_scene",
+      "relation": "renders_component",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "socket_io",
+      "relation": "manages",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "firebase_auth",
+      "relation": "uses_admin_sdk",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "firestore",
+      "relation": "performs_admin_operations",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "groq_api",
+      "relation": "calls_chat_api",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "smtp_provider",
+      "relation": "sends_email_via",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "cron_reminder",
+      "relation": "executes",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "face_api",
+      "relation": "serves_static_files",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "emotion_model",
+      "relation": "serves_via_models_endpoint",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "socket_io",
+      "target": "webrtc",
+      "relation": "relays_signaling_for",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "therapist_role",
+      "target": "face_api",
+      "relation": "uses_for_emotion_detection",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "therapist_role",
+      "target": "session_analytics",
+      "relation": "views_analytics_for",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "therapist_role",
+      "target": "video_call_page",
+      "relation": "participates_in",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "patient_role",
+      "target": "video_call_page",
+      "relation": "participates_in",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "patient_role",
+      "target": "journal_module",
+      "relation": "uses",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "video_call_page",
+      "target": "webrtc",
+      "relation": "establishes_peer_connection",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "video_call_page",
+      "target": "socket_io",
+      "relation": "exchanges_signals_via",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "face_api",
+      "relation": "emotion_model",
+      "target": "detects_emotions_with",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "emotion_timeline",
+      "target": "analyze_emotions",
+      "relation": "is_processed_by",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "analyze_emotions",
+      "target": "report_builder",
+      "relation": "provides_data_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "report_builder",
+      "target": "advanced_report",
+      "relation": "uses_insights_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "report_builder",
+      "target": "risk_assessment",
+      "relation": "calculates",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "stress_score",
+      "target": "risk_assessment",
+      "relation": "informs",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "analyze_emotions",
+      "target": "stress_score",
+      "relation": "calculates",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "advanced_report",
+      "target": "risk_assessment",
+      "relation": "includes",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "report_builder",
+      "target": "generate_pdf",
+      "relation": "uses_for_export",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "clinical_pdf",
+      "target": "generate_pdf",
+      "relation": "extends",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "session_entity",
+      "target": "firestore",
+      "relation": "stored_in",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "report_entity",
+      "target": "firestore",
+      "relation": "stored_in",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "user_entity",
+      "target": "firebase_auth",
+      "relation": "linked_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "user_entity",
+      "target": "firestore",
+      "relation": "stored_in",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "session_call",
+      "target": "session_entity",
+      "relation": "manages",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "session_call",
+      "target": "firestore",
+      "relation": "retrieves_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "session_analytics",
+      "target": "emotion_timeline",
+      "relation": "analyzes",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "chatbot_ui",
+      "target": "groq_api",
+      "relation": "sends_messages_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "chatbot_ui",
+      "target": "gemini_api",
+      "relation": "may_call_alternately",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "dashboard",
+      "relation": "renders_role_based",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "dashboard",
+      "target": "therapist_role",
+      "relation": "shown_for",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "dashboard",
+      "target": "patient_role",
+      "relation": "shown_for",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "backend_node",
+      "target": "flask_service",
+      "relation": "may_call",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "flask_service",
+      "target": "emotion_timeline",
+      "relation": "receives_updates_from",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "flask_service",
+      "target": "emotion_model",
+      "relation": "uses_for_graphing",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "auth_utils",
+      "target": "firebase_auth",
+      "relation": "encapsulates",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "auth_utils",
+      "target": "user_entity",
+      "relation": "retrieves_role_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "session_call",
+      "target": "auth_utils",
+      "relation": "validates_user_via",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "socket_io",
+      "target": "therapist_role",
+      "relation": "emits_emotion_updates_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "therapist_role",
+      "target": "emotion_timeline",
+      "relation": "receives",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "cron_reminder",
+      "target": "session_entity",
+      "relation": "scans",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "cron_reminder",
+      "target": "smtp_provider",
+      "relation": "triggers_email_via",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "ngrok_tunnel",
+      "target": "backend_node",
+      "relation": "exposes_publicly",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "frontend_react",
+      "target": "brain_scene",
+      "relation": "imports_three_fiber_components",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "brain_scene",
+      "target": "emotion_model",
+      "relation": "may_load",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "report_builder",
+      "target": "advanced_report",
+      "relation": "calls_functions_from",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "advanced_report",
+      "target": "emotion_timeline",
+      "relation": "processes",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "clinical_pdf",
+      "target": "report_entity",
+      "relation": "exports_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "journal_module",
+      "target": "firestore",
+      "relation": "stores_entries_in",
+      "confidence": "INFERRED"
+    }
+  ],
+  "hyperedges": [
+    {
+      "nodes": [
+        "therapist_role",
+        "patient_role",
+        "video_call_page",
+        "webrtc",
+        "socket_io"
+      ],
+      "label": "Real-time Video Consultation Workflow"
+    },
+    {
+      "nodes": [
+        "emotion_timeline",
+        "analyze_emotions",
+        "session_analytics",
+        "report_builder",
+        "advanced_report",
+        "risk_assessment"
+      ],
+      "label": "Emotion Analysis and Risk Assessment Pipeline"
+    },
+    {
+      "nodes": [
+        "frontend_react",
+        "firebase_auth",
+        "user_entity",
+        "therapist_role",
+        "patient_role",
+        "dashboard"
+      ],
+      "label": "Authentication and Role-Based Access Control"
+    },
+    {
+      "nodes": [
+        "backend_node",
+        "groq_api",
+        "chatbot_ui",
+        "gemini_api"
+      ],
+      "label": "AI Chatbot Integration Layer"
+    },
+    {
+      "nodes": [
+        "backend_node",
+        "cron_reminder",
+        "session_entity",
+        "smtp_provider",
+        "user_entity"
+      ],
+      "label": "Automated Email Notification System"
+    }
+  ]
+}

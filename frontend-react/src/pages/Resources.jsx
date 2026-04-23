@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import Card from '../components/ui/Card'
+import useTabTransition from '../hooks/useTabTransition'
 import SearchBar from '../components/ui/SearchBar'
 import SectionHeader from '../components/ui/SectionHeader'
 
@@ -40,20 +42,21 @@ export default function Resources() {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('all')
   const [openItemId, setOpenItemId] = useState('box-breathing')
+  const { isTransitioning, transitionTab } = useTabTransition(300)
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const tabParam = params.get('tab')
     const categoryParam = params.get('category')
 
-    if (tabParam === 'faq' || tabParam === 'resources') {
-      setTab(tabParam)
+    if ((tabParam === 'faq' || tabParam === 'resources') && tabParam !== tab) {
+      transitionTab(() => setTab(tabParam))
     }
 
     if (categoryParam) {
       setCategory(categoryParam.toLowerCase())
     }
-  }, [location.search])
+  }, [location.search, tab, transitionTab])
 
   const baseList = tab === 'resources' ? RESOURCE_LIST : FAQ_LIST
 
@@ -74,10 +77,18 @@ export default function Resources() {
       />
 
       <div className="ts-tabbar">
-        <button type="button" className={`ts-tab ${tab === 'resources' ? 'ts-tab--active' : ''}`} onClick={() => setTab('resources')}>
+        <button
+          type="button"
+          className={`ts-tab ${tab === 'resources' ? 'ts-tab--active' : ''}`}
+          onClick={() => transitionTab(() => setTab('resources'))}
+        >
           Resources
         </button>
-        <button type="button" className={`ts-tab ${tab === 'faq' ? 'ts-tab--active' : ''}`} onClick={() => setTab('faq')}>
+        <button
+          type="button"
+          className={`ts-tab ${tab === 'faq' ? 'ts-tab--active' : ''}`}
+          onClick={() => transitionTab(() => setTab('faq'))}
+        >
           FAQ
         </button>
       </div>
@@ -92,36 +103,47 @@ export default function Resources() {
         </select>
       </div>
 
-      <div className="ts-stack">
-        {visibleItems.map((item) => {
-          const expanded = openItemId === item.id
-          return (
-            <Card key={item.id} className="ts-resource-card">
-              <button
-                type="button"
-                className="ts-resource-card__header"
-                onClick={() => setOpenItemId(expanded ? '' : item.id)}
-              >
-                <div>
-                  <h3 className="ts-section-title">{item.title}</h3>
-                  <p className="ts-text-secondary">{item.description}</p>
-                </div>
-                <span className="ts-text-secondary" aria-hidden="true">{expanded ? 'v' : '>'}</span>
-              </button>
-              <div className="ts-resource-card__meta">
-                <span className="ts-resource-tag">{item.category}</span>
-                <span className="ts-text-secondary">{item.difficulty}</span>
-                <span className="ts-text-secondary">{item.duration}</span>
-              </div>
-              {expanded ? (
-                <p className="ts-text-secondary ts-resource-card__body">
-                  Practice this resource in a quiet place and track your emotional response in your journal.
-                </p>
-              ) : null}
-            </Card>
-          )
-        })}
-      </div>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          aria-busy={isTransitioning}
+        >
+          <div className="ts-stack">
+            {visibleItems.map((item) => {
+              const expanded = openItemId === item.id
+              return (
+                <Card key={item.id} className="ts-resource-card">
+                  <button
+                    type="button"
+                    className="ts-resource-card__header"
+                    onClick={() => setOpenItemId(expanded ? '' : item.id)}
+                  >
+                    <div>
+                      <h3 className="ts-section-title">{item.title}</h3>
+                      <p className="ts-text-secondary">{item.description}</p>
+                    </div>
+                    <span className="ts-text-secondary" aria-hidden="true">{expanded ? 'v' : '>'}</span>
+                  </button>
+                  <div className="ts-resource-card__meta">
+                    <span className="ts-resource-tag">{item.category}</span>
+                    <span className="ts-text-secondary">{item.difficulty}</span>
+                    <span className="ts-text-secondary">{item.duration}</span>
+                  </div>
+                  {expanded ? (
+                    <p className="ts-text-secondary ts-resource-card__body">
+                      Practice this resource in a quiet place and track your emotional response in your journal.
+                    </p>
+                  ) : null}
+                </Card>
+              )
+            })}
+          </div>
+        </motion.div>
+      </AnimatePresence>
 
       <Card className="ts-crisis-banner">
         <div className="ts-crisis-banner__header">
