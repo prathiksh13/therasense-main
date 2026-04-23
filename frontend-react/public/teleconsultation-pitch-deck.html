@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Teleconsultation Platform Pitch Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy: #2f4156;
+        --teal: #567c8d;
+        --light-blue: #c8d9e6;
+        --beige: #f5efeb;
+        --white: #ffffff;
+        --text-dark: #203040;
+        --text-soft: #4c6377;
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --shadow-soft: 0 14px 40px rgba(47, 65, 86, 0.12);
+        --shadow-card: 0 8px 24px rgba(47, 65, 86, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: "Manrope", sans-serif;
+        color: var(--text-dark);
+        background: radial-gradient(circle at 10% 10%, #d8e8f2, #f7f3ef 45%, #edf5fa 100%);
+        overflow: hidden;
+      }
+
+      .deck-shell {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+      }
+
+      .deck {
+        width: min(1360px, 96vw);
+        height: min(780px, 92vh);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 30px;
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(12px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .slides {
+        height: calc(100% - 64px);
+        position: relative;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        padding: 52px 60px;
+        opacity: 0;
+        transform: translateX(42px) scale(0.98);
+        pointer-events: none;
+        transition: opacity 0.45s ease, transform 0.45s ease;
+        display: grid;
+        gap: 26px;
+        align-content: start;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 239, 235, 0.65));
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        pointer-events: auto;
+      }
+
+      .slide-title {
+        margin: 0;
+        font: 800 clamp(1.8rem, 2.3vw, 2.8rem) / 1.12 "Sora", sans-serif;
+        color: var(--navy);
+        letter-spacing: -0.02em;
+      }
+
+      .slide-subtitle {
+        margin: 0;
+        color: var(--text-soft);
+        font-size: clamp(1rem, 1.2vw, 1.25rem);
+      }
+
+      .kicker {
+        width: fit-content;
+        background: rgba(86, 124, 141, 0.12);
+        color: var(--teal);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        display: grid;
+        gap: 18px;
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .card {
+        background: var(--white);
+        border: 1px solid rgba(47, 65, 86, 0.12);
+        border-radius: var(--radius-md);
+        padding: 18px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .card h3,
+      .card h4,
+      .card p {
+        margin: 0;
+      }
+
+      .card h3 {
+        color: var(--navy);
+        font-size: 1.08rem;
+      }
+
+      .muted {
+        color: var(--text-soft);
+      }
+
+      .icon-chip {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(200, 217, 230, 0.35);
+        display: grid;
+        place-items: center;
+        margin-bottom: 12px;
+      }
+
+      .icon {
+        width: 22px;
+        height: 22px;
+        stroke: var(--navy);
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .title-slide {
+        overflow: hidden;
+        color: var(--white);
+        background: linear-gradient(125deg, #223246 0%, #2f4156 40%, #567c8d 100%);
+      }
+
+      .title-slide::before,
+      .title-slide::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+
+      .title-slide::before {
+        width: 520px;
+        height: 520px;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
+        top: -220px;
+        right: -180px;
+      }
+
+      .title-slide::after {
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle at 60% 60%, rgba(200, 217, 230, 0.3), rgba(255, 255, 255, 0));
+        bottom: -150px;
+        left: -120px;
+        animation-duration: 15s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translateY(-8px) translateX(-10px);
+        }
+        to {
+          transform: translateY(12px) translateX(12px);
+        }
+      }
+
+      .title-slide .slide-title,
+      .title-slide .slide-subtitle {
+        color: var(--white);
+        position: relative;
+        z-index: 1;
+      }
+
+      .title-slide .headline {
+        font: 800 clamp(2.4rem, 4vw, 4.2rem) / 1.04 "Sora", sans-serif;
+        max-width: 860px;
+        margin: 0;
+        letter-spacing: -0.03em;
+      }
+
+      .title-slide .slide-subtitle {
+        max-width: 720px;
+        font-size: clamp(1.1rem, 1.6vw, 1.42rem);
+        opacity: 0.95;
+      }
+
+      .brand-mark {
+        width: fit-content;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        font-size: 0.9rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--beige);
+        position: relative;
+        z-index: 1;
+      }
+
+      .split-col {
+        display: grid;
+        gap: 14px;
+      }
+
+      .list {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--text-soft);
+        line-height: 1.55;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+
+      .flow .card {
+        position: relative;
+      }
+
+      .flow .card:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        width: 24px;
+        height: 2px;
+        background: rgba(86, 124, 141, 0.6);
+      }
+
+      .diagram {
+        background: linear-gradient(180deg, rgba(200, 217, 230, 0.3), rgba(255, 255, 255, 0.8));
+        border: 1px dashed rgba(47, 65, 86, 0.35);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+      }
+
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .block {
+        background: var(--white);
+        border: 1px solid rgba(47, 65, 86, 0.16);
+        border-radius: 14px;
+        padding: 14px;
+        text-align: center;
+        box-shadow: var(--shadow-card);
+      }
+
+      .arrow {
+        color: var(--teal);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .chart-wrap {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        align-items: end;
+      }
+
+      .bar {
+        background: linear-gradient(180deg, #567c8d, #2f4156);
+        border-radius: 12px 12px 6px 6px;
+        min-height: 28px;
+        position: relative;
+      }
+
+      .bar::after {
+        content: attr(data-value);
+        position: absolute;
+        top: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--navy);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .bar-label {
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--text-soft);
+        margin-top: 8px;
+      }
+
+      .screenshot {
+        border-radius: 14px;
+        border: 1px solid rgba(47, 65, 86, 0.14);
+        background: linear-gradient(160deg, #ffffff, #f0f6fa);
+        height: 170px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .screenshot::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 34px;
+        background: #edf5fa;
+        border-bottom: 1px solid rgba(47, 65, 86, 0.08);
+      }
+
+      .dot-row {
+        position: absolute;
+        top: 11px;
+        left: 12px;
+        display: flex;
+        gap: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #87a9be;
+      }
+
+      .ui-line {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(86, 124, 141, 0.25);
+        margin: 10px 14px;
+      }
+
+      .ui-line:nth-child(2) {
+        width: 72%;
+        margin-top: 56px;
+      }
+
+      .ui-line:nth-child(3) {
+        width: 86%;
+      }
+
+      .ui-line:nth-child(4) {
+        width: 58%;
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+
+      .timeline .card {
+        border-top: 5px solid var(--teal);
+      }
+
+      .controls {
+        height: 64px;
+        border-top: 1px solid rgba(47, 65, 86, 0.14);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .progress {
+        width: 220px;
+        height: 7px;
+        background: rgba(86, 124, 141, 0.2);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #567c8d, #2f4156);
+        transition: width 0.25s ease;
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        border: 1px solid rgba(47, 65, 86, 0.2);
+        background: var(--white);
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-weight: 700;
+        color: var(--navy);
+        cursor: pointer;
+      }
+
+      .meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.88rem;
+        color: var(--text-soft);
+      }
+
+      .small {
+        font-size: 0.9rem;
+        color: var(--text-soft);
+      }
+
+      @media (max-width: 1100px) {
+        .slide {
+          padding: 28px 24px;
+          overflow-y: auto;
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2,
+        .timeline,
+        .flow,
+        .chart-wrap {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .diagram-grid {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .flow .card:not(:last-child)::after {
+          display: none;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .deck-shell {
+          padding: 0;
+        }
+
+        .deck {
+          width: 100vw;
+          height: 100vh;
+          border-radius: 0;
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2,
+        .timeline,
+        .flow,
+        .chart-wrap {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck-shell">
+      <main class="deck" aria-label="AI Teleconsultation Pitch Deck">
+        <section class="slides" id="slides">
+          <article class="slide title-slide active">
+            <div class="brand-mark">TheraSense AI</div>
+            <h1 class="headline">AI-Powered Teleconsultation Platform</h1>
+            <p class="slide-subtitle">
+              Real-time emotion intelligence, adaptive care pathways, and clinician-ready insights in one secure virtual care experience.
+            </p>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Problem Statement</div>
+            <h2 class="slide-title">Current Telehealth Misses Clinical Context</h2>
+            <div class="grid-3">
+              <div class="card">
+                <div class="icon-chip">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8" /><path d="M14 7h7v7" /></svg>
+                </div>
+                <h3>Silent Distress</h3>
+                <p class="muted">Patient emotional shifts are rarely measured in real time.</p>
+              </div>
+              <div class="card">
+                <div class="icon-chip">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                </div>
+                <h3>Fragmented Conversations</h3>
+                <p class="muted">No AI support during consultation for consistent triage.</p>
+              </div>
+              <div class="card">
+                <div class="icon-chip">
+                  <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" /></svg>
+                </div>
+                <h3>Delayed Intervention</h3>
+                <p class="muted">Risk alerts and escalation often occur after the session ends.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Existing vs Gap</div>
+            <h2 class="slide-title">What Platforms Provide vs What Clinicians Need</h2>
+            <div class="grid-2">
+              <div class="split-col card">
+                <h3>Existing Systems</h3>
+                <ul class="list">
+                  <li>Video + audio calling</li>
+                  <li>Static appointment workflows</li>
+                  <li>Manual note capture</li>
+                  <li>Post-session reporting only</li>
+                </ul>
+              </div>
+              <div class="split-col card" style="border-color: rgba(86, 124, 141, 0.5); background: #eef5f8;">
+                <h3>Critical Gap</h3>
+                <ul class="list">
+                  <li>No live emotional intelligence layer</li>
+                  <li>No proactive risk detection pipeline</li>
+                  <li>No AI co-pilot for patient engagement</li>
+                  <li>No instant clinician decision support</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Proposed Solution</div>
+            <h2 class="slide-title">Unified AI Care Intelligence Platform</h2>
+            <div class="flow">
+              <div class="card"><h3>Capture</h3><p class="muted">Video, voice, patient history</p></div>
+              <div class="card"><h3>Analyze</h3><p class="muted">Face emotion + NLP cues</p></div>
+              <div class="card"><h3>Assist</h3><p class="muted">AI prompts for clinicians</p></div>
+              <div class="card"><h3>Escalate</h3><p class="muted">Risk-aware emergency flow</p></div>
+              <div class="card"><h3>Report</h3><p class="muted">Instant visual summaries</p></div>
+            </div>
+            <div class="card">
+              <p class="muted">
+                One workflow, from first patient response to post-consultation clinical documentation.
+              </p>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">System Architecture</div>
+            <h2 class="slide-title">Scalable, Modular, and Real-Time</h2>
+            <div class="diagram">
+              <div class="diagram-grid">
+                <div class="block">Patient App<br /><span class="small">Video + Inputs</span></div>
+                <div class="arrow">→</div>
+                <div class="block">Realtime Gateway<br /><span class="small">Socket + Streams</span></div>
+                <div class="block">AI Inference Layer<br /><span class="small">Emotion + NLP</span></div>
+                <div class="arrow">→</div>
+                <div class="block">Decision Engine<br /><span class="small">Risk + Insight</span></div>
+                <div class="block">Clinician Dashboard<br /><span class="small">Alerts + Guidance</span></div>
+                <div class="arrow">→</div>
+                <div class="block">Report Store<br /><span class="small">FHIR-ready records</span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Methodology</div>
+            <h2 class="slide-title">From Session Start to Clinical Action</h2>
+            <div class="flow">
+              <div class="card"><h3>1. Onboard</h3><p class="muted">Patient context + consent</p></div>
+              <div class="card"><h3>2. Stream</h3><p class="muted">Live multimodal signals</p></div>
+              <div class="card"><h3>3. Detect</h3><p class="muted">Emotion confidence tracking</p></div>
+              <div class="card"><h3>4. Evaluate</h3><p class="muted">AI risk scoring model</p></div>
+              <div class="card"><h3>5. Act</h3><p class="muted">Alerts, reports, follow-up</p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Results</div>
+            <h2 class="slide-title">Platform Outputs in Clinical Workflow</h2>
+            <div class="grid-3">
+              <div class="card">
+                <div class="screenshot">
+                  <div class="dot-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="ui-line"></div><div class="ui-line"></div><div class="ui-line"></div>
+                </div>
+                <p class="small">Emotion timeline panel during consultation</p>
+              </div>
+              <div class="card">
+                <div class="screenshot">
+                  <div class="dot-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="ui-line"></div><div class="ui-line"></div><div class="ui-line"></div>
+                </div>
+                <p class="small">Risk alert card with confidence and triggers</p>
+              </div>
+              <div class="card">
+                <div class="screenshot">
+                  <div class="dot-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="ui-line"></div><div class="ui-line"></div><div class="ui-line"></div>
+                </div>
+                <p class="small">Clinician summary panel for decision support</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Evaluation</div>
+            <h2 class="slide-title">Measured Impact Against Baseline</h2>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Model & Workflow Gains</h3>
+                <div class="chart-wrap" style="margin-top: 14px;">
+                  <div>
+                    <div class="bar" data-value="91%" style="height: 170px;"></div>
+                    <div class="bar-label">Emotion Accuracy</div>
+                  </div>
+                  <div>
+                    <div class="bar" data-value="63%" style="height: 116px;"></div>
+                    <div class="bar-label">Triage Time Reduction</div>
+                  </div>
+                  <div>
+                    <div class="bar" data-value="72%" style="height: 136px;"></div>
+                    <div class="bar-label">Alert Precision</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <h3>Usability Feedback</h3>
+                <ul class="list" style="margin-top: 10px;">
+                  <li>4.7 / 5 clinician satisfaction score</li>
+                  <li>Faster patient state awareness in first 5 minutes</li>
+                  <li>Higher confidence in escalation decisions</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Features</div>
+            <h2 class="slide-title">Product Highlights for Daily Clinical Use</h2>
+            <div class="grid-4">
+              <div class="card"><h3>Live Emotion AI</h3><p class="muted">Frame-level mood inference</p></div>
+              <div class="card"><h3>Smart Chatbot</h3><p class="muted">Guided symptom conversation</p></div>
+              <div class="card"><h3>Risk Alerts</h3><p class="muted">Proactive emergency triggers</p></div>
+              <div class="card"><h3>Clinical Reports</h3><p class="muted">Auto-generated summaries</p></div>
+              <div class="card"><h3>Session Timeline</h3><p class="muted">Contextual event chronology</p></div>
+              <div class="card"><h3>Data Security</h3><p class="muted">Protected health workflows</p></div>
+              <div class="card"><h3>Doctor Dashboard</h3><p class="muted">Prioritized action center</p></div>
+              <div class="card"><h3>Scalable Backend</h3><p class="muted">Cloud-ready microservices</p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Video + AI</div>
+            <h2 class="slide-title">Real-Time Emotion Detection in Consultation</h2>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Live Session Feed</h3>
+                <div class="screenshot" style="height: 220px; margin-top: 10px;">
+                  <div class="dot-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="ui-line"></div><div class="ui-line"></div><div class="ui-line"></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3>Emotion Signal Overlay</h3>
+                <ul class="list" style="margin-top: 10px;">
+                  <li>Confidence bands for stress, calm, confusion</li>
+                  <li>Drift trend flags in real-time</li>
+                  <li>Session-level emotional risk summary</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Reports</div>
+            <h2 class="slide-title">Data-Rich Summaries for Follow-Up Care</h2>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Consultation Summary UI</h3>
+                <div class="screenshot" style="height: 240px; margin-top: 10px;">
+                  <div class="dot-row"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                  <div class="ui-line"></div><div class="ui-line"></div><div class="ui-line"></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3>Key Sections</h3>
+                <ul class="list" style="margin-top: 10px;">
+                  <li>Emotion trend chart and markers</li>
+                  <li>Clinical notes + AI recommendations</li>
+                  <li>Risk incidents and action log</li>
+                  <li>Follow-up checklist and reminders</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Chatbot</div>
+            <h2 class="slide-title">Patient Engagement with AI Assistant</h2>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Conversational Intake Mock</h3>
+                <div class="screenshot" style="height: 250px; margin-top: 10px;"></div>
+              </div>
+              <div class="card">
+                <h3>Why It Matters</h3>
+                <ul class="list" style="margin-top: 10px;">
+                  <li>Captures symptoms before doctor joins</li>
+                  <li>Improves consultation efficiency</li>
+                  <li>Offers calm, guided interaction for patients</li>
+                  <li>Feeds structured context to clinicians</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Emergency Feature</div>
+            <h2 class="slide-title">Alert Escalation Pipeline</h2>
+            <div class="flow">
+              <div class="card"><h3>Signal Spike</h3><p class="muted">High-risk emotion pattern</p></div>
+              <div class="card"><h3>Validation</h3><p class="muted">Rule + model confidence check</p></div>
+              <div class="card"><h3>Instant Alert</h3><p class="muted">Doctor + support team notified</p></div>
+              <div class="card"><h3>Action Protocol</h3><p class="muted">Escalation workflow triggered</p></div>
+              <div class="card"><h3>Audit Trail</h3><p class="muted">Incident logged in report</p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Future Scope</div>
+            <h2 class="slide-title">Roadmap to Intelligent Connected Care</h2>
+            <div class="timeline">
+              <div class="card"><h3>Q3</h3><p class="muted">Multilingual emotion model expansion</p></div>
+              <div class="card"><h3>Q4</h3><p class="muted">Wearable signal integration</p></div>
+              <div class="card"><h3>Q1</h3><p class="muted">Hospital EHR interoperability APIs</p></div>
+              <div class="card"><h3>Q2</h3><p class="muted">Personalized therapy recommendation engine</p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="kicker">Conclusion</div>
+            <h2 class="slide-title">AI That Enhances Clinical Judgment, Not Replaces It</h2>
+            <div class="card" style="padding: 26px; border-radius: 20px;">
+              <p class="slide-subtitle" style="font-size: 1.3rem; color: var(--navy);">
+                TheraSense transforms virtual consultations into measurable, actionable, and emotionally intelligent care experiences.
+              </p>
+            </div>
+          </article>
+
+          <article class="slide" style="place-content: center; text-align: center;">
+            <h2 class="slide-title" style="font-size: clamp(2.2rem, 3vw, 3.2rem);">Thank You</h2>
+            <p class="slide-subtitle">Questions and live demo welcome.</p>
+          </article>
+        </section>
+
+        <footer class="controls">
+          <div class="meta">
+            <span id="slideCounter">1 / 16</span>
+            <div class="progress" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="prevBtn">Previous</button>
+            <button class="btn" id="nextBtn">Next</button>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const progressBar = document.getElementById('progressBar');
+      const slideCounter = document.getElementById('slideCounter');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      let current = 0;
+
+      function render() {
+        slides.forEach((slide, index) => {
+          slide.classList.toggle('active', index === current);
+        });
+        const progress = ((current + 1) / slides.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        slideCounter.textContent = `${current + 1} / ${slides.length}`;
+      }
+
+      function next() {
+        current = Math.min(current + 1, slides.length - 1);
+        render();
+      }
+
+      function prev() {
+        current = Math.max(current - 1, 0);
+        render();
+      }
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+          event.preventDefault();
+          next();
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          prev();
+        }
+      });
+
+      let wheelTimer;
+      window.addEventListener(
+        'wheel',
+        (event) => {
+          clearTimeout(wheelTimer);
+          wheelTimer = setTimeout(() => {
+            if (Math.abs(event.deltaY) < 12) return;
+            if (event.deltaY > 0) next();
+            else prev();
+          }, 80);
+        },
+        { passive: true }
+      );
+
+      render();
+    </script>
+  </body>
+</html>

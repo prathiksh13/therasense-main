@@ -211,36 +211,45 @@ export function generateReportPdfFromData(report = {}, fileName = 'report') {
   const timeline = report?.timeline || emotionData?.timeline || []
 
   pdf.setFontSize(18)
-  pdf.text('Session Report', 14, 20)
+  pdf.text('Your Progress Summary', 14, 20)
 
   pdf.setFontSize(11)
   pdf.text(`Patient Name: ${report.patientName || 'N/A'}`, 14, 32)
   pdf.text(`Therapist Name: ${report.therapistName || 'N/A'}`, 14, 39)
   pdf.text(`Date: ${reportDate}`, 14, 46)
 
-  const summaryLines = pdf.splitTextToSize(`Summary: ${report.summary || report.emotionSummary || 'N/A'}`, 180)
+  const summaryLines = pdf.splitTextToSize(`Progress Summary: ${report.summary || report.emotionSummary || 'N/A'}`, 180)
   pdf.text(summaryLines, 14, 58)
 
-  const emotionLines = pdf.splitTextToSize(
-    `Emotion data: ${JSON.stringify(emotionData, null, 2) || 'N/A'}`,
-    180
-  )
-  pdf.text(emotionLines, 14, 58 + summaryLines.length * 6 + 8)
+  let y = 58 + summaryLines.length * 6 + 12
 
-  let y = 58 + summaryLines.length * 6 + emotionLines.length * 6 + 16
-  pdf.text('Timeline:', 14, y)
-  y += 7
-
-  timeline.slice(0, 10).forEach((item, index) => {
-    const line = `${index + 1}. ${item.time || '-'} | ${item.emotion || 'unknown'} | ${Math.round((item.confidence || 0) * 100)}%`
-    const wrapped = pdf.splitTextToSize(line, 178)
-    pdf.text(wrapped, 16, y)
-    y += wrapped.length * 6
-  })
-
-  if (!timeline.length) {
-    pdf.text('No timeline data available.', 14, y)
+  if (report?.therapistNotes) {
+    pdf.setFontSize(13);
+    pdf.text('Message from your therapist:', 14, y)
+    y += 8;
+    pdf.setFontSize(11);
+    const noteLines = pdf.splitTextToSize(report.therapistNotes, 180);
+    pdf.text(noteLines, 14, y);
+    y += noteLines.length * 6 + 12;
   }
+
+  pdf.setFontSize(13);
+  pdf.text('Session Journey:', 14, y)
+  y += 8
+  
+  pdf.setFontSize(11);
+  pdf.text('During this session, you showed steady progress in exploring and navigating your feelings.', 14, y);
+  y += 12;
+
+  pdf.setFontSize(13);
+  pdf.text('What to try this week:', 14, y);
+  y += 8;
+  pdf.setFontSize(11);
+  pdf.text('- Practice deep breathing when feeling overwhelmed.', 14, y);
+  y += 6;
+  pdf.text('- Try daily journaling to reflect on your progress.', 14, y);
+  y += 6;
+  pdf.text('- Use positive affirmations to center yourself.', 14, y);
 
   pdf.save(`${fileName}.pdf`)
 }

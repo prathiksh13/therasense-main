@@ -9,6 +9,8 @@ export default defineConfig({
       '/chat': 'http://localhost:3000',
       '/send-booking-email': 'http://localhost:3000',
       '/send-reminder-email': 'http://localhost:3000',
+      '/send-report-email': 'http://localhost:3000',
+      '/send-therapist-note': 'http://localhost:3000',
       '/send-emergency-email': 'http://localhost:3000',
       '/upload-journal-media': 'http://localhost:3000',
       '/face-api.js': 'http://localhost:3000',

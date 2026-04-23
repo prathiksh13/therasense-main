@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import useUserRole from '../hooks/useUserRole'
 import usePatientWorkspaceData from '../hooks/usePatientWorkspaceData'
 import useTherapistWorkspaceData from '../hooks/useTherapistWorkspaceData'
@@ -11,6 +10,7 @@ import { handleJoinCall } from '../utils/sessionCall'
 const patientLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
   { to: '/sessions', label: 'Appointments', icon: 'calendar' },
+  { to: '/assignments', label: 'Assignments', icon: 'clipboard' },
   { to: '/reports', label: 'Reports', icon: 'chart' },
   { to: '/journal', label: 'Journal', icon: 'journal' },
   { to: '/resources', label: 'Resources', icon: 'bookmark' },
@@ -21,6 +21,7 @@ const patientLinks = [
 const therapistLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
   { to: '/sessions', label: 'Appointments', icon: 'calendar' },
+  { to: '/assignments', label: 'Assignments', icon: 'clipboard' },
   { to: '/reports', label: 'Reports', icon: 'chart' },
   { to: '/therapist/journal', label: 'Journal', icon: 'journal' },
   { to: '/resources', label: 'Resources', icon: 'bookmark' },
@@ -37,12 +38,10 @@ function isActivePath(currentPath, targetPath) {
 export default function Sidebar({ open, onClose }) {
   const location = useLocation()
   const { role, uid } = useUserRole()
-  const { user } = useAuth()
   const patientData = usePatientWorkspaceData()
   const therapistData = useTherapistWorkspaceData()
   const navigate = useNavigate()
   const navLinks = role === 'therapist' ? therapistLinks : patientLinks
-  const userName = user?.displayName || user?.email?.split('@')?.[0] || role || 'user'
 
   async function handleLogout() {
     try {
@@ -129,6 +128,13 @@ export default function Sidebar({ open, onClose }) {
             <path d="M14 3v4h4" />
           </svg>
         )
+      case 'clipboard':
+        return (
+          <svg {...iconProps}>
+            <rect x="6" y="5" width="12" height="16" rx="2" />
+            <path d="M9 5.5h6M9.5 3h5a1 1 0 0 1 1 1v1.5h-7V4a1 1 0 0 1 1-1Z" />
+          </svg>
+        )
       case 'journal':
         return (
           <svg {...iconProps}>
@@ -212,9 +218,6 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         <div className="workspace-sidebar__footer dashboard-sidebar__footer">
-          <p className="workspace-sidebar__eyebrow">Current User</p>
-          <p className="workspace-sidebar__footer-title dashboard-sidebar__footer-title">{userName}</p>
-          <p className="workspace-sidebar__footer-text dashboard-sidebar__footer-text">{role === 'therapist' ? 'Therapist' : 'Patient'}</p>
           <button type="button" className="workspace-sidebar__logout" onClick={handleLogout}>
             <span aria-hidden="true" style={{fontSize:'1.1em'}}>&#x21bb;</span>
             Logout

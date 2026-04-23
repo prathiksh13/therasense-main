@@ -295,6 +295,7 @@ export default function Dashboard() {
                 session={nextSession}
                 currentUserRole={role}
                 currentUserId={patientData.uid}
+                hidePersonLine={!isTherapist}
                 onAccept={handleAcceptSession}
                 onStart={handleStartSession}
                 onJoin={handleJoinSession}

@@ -339,6 +339,7 @@ export default function PatientHome() {
             actionLabel="Join"
             onAction={handleJoinSession}
             onDelete={handleDeleteSession}
+            hideSubtitle
             emptyText="No upcoming sessions"
           />
 

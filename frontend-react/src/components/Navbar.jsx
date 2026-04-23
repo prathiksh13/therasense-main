@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { onAuthStateChanged } from 'firebase/auth'
-import ProfileMenu from './ProfileMenu'
 import ThemeToggle from './ThemeToggle'
 import { getDashboardPath, getUserRole } from '../utils/auth'
 import { firebaseAuth } from '../lib/firebase'
 
-export default function Navbar({ onMenuToggle }) {
+export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const [role, setRole] = useState('')
@@ -50,16 +49,6 @@ export default function Navbar({ onMenuToggle }) {
   return (
     <nav className="dashboard-navbar glass" style={{ overflow: 'visible' }}>
       <div className="dashboard-navbar__left">
-        {onMenuToggle ? (
-          <button
-            type="button"
-            onClick={onMenuToggle}
-            className="dashboard-navbar__icon-btn"
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-        ) : null}
         <button
           type="button"
           onClick={handleHome}
@@ -95,7 +84,14 @@ export default function Navbar({ onMenuToggle }) {
       <div className="dashboard-navbar__right">
         <ThemeToggle />
         {hasFirebaseUser ? (
-          <ProfileMenu />
+          <button
+            type="button"
+            onClick={() => navigate('/profile')}
+            className="profile-menu__button"
+            aria-label="Open profile"
+          >
+            <span aria-hidden="true">P</span>
+          </button>
         ) : (
           <button
             type="button"

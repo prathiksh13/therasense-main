@@ -1180,7 +1180,22 @@ export default function Therapist() {
       createdAt: serverTimestamp(),
     }
 
-    await addDoc(collection(firestoreDb, 'reports'), reportPayload)
+    const reportRef = await addDoc(collection(firestoreDb, 'reports'), reportPayload)
+
+    fetch('/send-report-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId,
+        reportId: reportRef.id,
+        summary: reportPayload.summary || reportPayload.emotionSummary || '',
+        patientSummary: reportPayload.emotionSummary || reportPayload.summary || '',
+        therapistSummary: reportPayload.summary || reportPayload.emotionSummary || '',
+        reportLink: `${window.location.origin}/reports?sessionId=${sessionId}`,
+      }),
+    }).catch((error) => {
+      console.error('Failed to send report email:', error)
+    })
   }
 
   async function saveSessionMetadata() {
@@ -1264,7 +1279,6 @@ export default function Therapist() {
           role="therapist"
           title="Therapist Session"
           subtitle="Live session"
-          onMenuToggle={() => setSidebarOpen((value) => !value)}
           actionLabel={showReport ? 'Hide Report' : 'View Report'}
           onAction={() => setShowReport((value) => !value)}
           actionDisabled={timeline.length === 0}

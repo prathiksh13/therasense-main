@@ -8,7 +8,7 @@ export default function Layout({ children }) {
   const [collapsed, setCollapsed] = useState(false)
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     const stored = Number(window.localStorage.getItem('therasense-sidebar-width') || 0)
-    return Number.isFinite(stored) && stored >= 300 && stored <= 420 ? stored : 320
+    return Number.isFinite(stored) && stored >= 240 && stored <= 260 ? stored : 248
   })
   const location = useLocation()
 
@@ -35,7 +35,7 @@ export default function Layout({ children }) {
       const startWidth = sidebarWidth
 
       function onMouseMove(moveEvent) {
-        const next = Math.min(420, Math.max(300, startWidth + (moveEvent.clientX - startX)))
+        const next = Math.min(260, Math.max(240, startWidth + (moveEvent.clientX - startX)))
         setSidebarWidth(next)
       }
 
@@ -68,7 +68,7 @@ export default function Layout({ children }) {
         onToggleCollapse={() => setCollapsed((prev) => !prev)}
       />
       <div className="workspace-layout__content dashboard-shell__content ts-main-content">
-        <Navbar onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
+        <Navbar />
         <main className="dashboard-main">
           <div key={location.pathname} className="page-transition">
             {children}

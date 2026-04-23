@@ -29,6 +29,19 @@ export default function TherapistNotes({ therapistId, sessions = [] }) {
         note: trimmedNote,
         savedAt: serverTimestamp(),
       })
+
+      fetch('/send-therapist-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: selectedSessionId,
+          therapistId,
+          therapistMessage: trimmedNote,
+        }),
+      }).catch((error) => {
+        console.error('Failed to send therapist follow-up email:', error)
+      })
+
       setNoteText('')
       setStatus('Session notes saved.')
     } catch (error) {

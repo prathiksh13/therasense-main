@@ -47,11 +47,12 @@ export default function SessionCard({
   onEnd,
   readOnly = false,
   embedded = false,
+  hidePersonLine = false,
 }) {
   const status = normalizeSessionStatus(session?.status)
   const isTherapist = currentUserRole === 'therapist'
   const isPatient = currentUserRole === 'patient'
-  const belongsToPatient = isPatient && !!session?.patientId && session.patientId === currentUserId
+  const belongsToPatient = isPatient && (!session?.patientId || session.patientId === currentUserId)
 
   const showAccept = !readOnly && isTherapist && status === 'pending'
   const showStart = !readOnly && isTherapist && status === 'confirmed'
@@ -63,7 +64,9 @@ export default function SessionCard({
     <article className={`ts-card ${embedded ? 'ts-card--embedded' : ''}`.trim()}>
       <div className="ts-row-between">
         <div className="ts-stack-sm">
-          <p className="ts-session-line">{isTherapist ? (session?.patientName || session?.patientId || 'Patient') : (session?.therapistName || session?.therapistId || 'Therapist')}</p>
+          {!hidePersonLine ? (
+            <p className="ts-session-line">{isTherapist ? (session?.patientName || session?.patientId || 'Patient') : (session?.therapistName || session?.therapistId || 'Therapist')}</p>
+          ) : null}
           <p className="ts-session-line">{session?.dateLabel || session?.date || 'Date unavailable'}</p>
           <p className="ts-session-line">{session?.timeLabel || session?.time || 'Time unavailable'}</p>
         </div>

@@ -20,6 +20,7 @@ const Journal = lazy(() => import('./pages/Journal'))
 const Resources = lazy(() => import('./pages/Resources'))
 const TherapistJournal = lazy(() => import('./pages/TherapistJournal'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const Assignments = lazy(() => import('./pages/Assignments'))
 
 export default function App() {
   const { theme } = useTheme()
@@ -137,6 +138,16 @@ export default function App() {
               <ProtectedRoute allowedRoles={['patient', 'therapist']}>
                 <Layout>
                   <SettingsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assignments"
+            element={
+              <ProtectedRoute allowedRoles={['patient', 'therapist']}>
+                <Layout>
+                  <Assignments />
                 </Layout>
               </ProtectedRoute>
             }

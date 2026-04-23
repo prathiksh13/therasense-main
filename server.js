@@ -34,6 +34,9 @@ const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 const FALLBACK_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'therasense-b0c8a';
 const FIREBASE_STORAGE_BUCKET = process.env.FIREBASE_STORAGE_BUCKET || `${FALLBACK_PROJECT_ID}.appspot.com`;
 const USE_LOCAL_JOURNAL_UPLOADS = String(process.env.USE_LOCAL_JOURNAL_UPLOADS || 'true') !== 'false';
+const MAIL_USER = process.env.EMAIL_USER || process.env.SMTP_USER || '';
+const MAIL_PASS = process.env.EMAIL_PASS || process.env.SMTP_PASS || '';
+const MAIL_FROM = process.env.FROM_EMAIL || MAIL_USER;
 
 function normalizeGroqModel(model) {
   const requestedModel = String(model || '').trim();
@@ -83,17 +86,16 @@ try {
   console.warn('Firebase Admin not initialized:', error.message);
 }
 
+const smtpPort = Number(process.env.SMTP_PORT || 587);
 const mailTransport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: String(process.env.SMTP_SECURE || 'false') === 'true',
-  auth: process.env.SMTP_USER && process.env.SMTP_PASS ? {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: smtpPort,
+  secure: String(process.env.SMTP_SECURE || (smtpPort === 465 ? 'true' : 'false')) === 'true',
+  auth: MAIL_USER && MAIL_PASS ? {
+    user: MAIL_USER,
+    pass: MAIL_PASS,
   } : undefined,
 });
-
-const MAIL_FROM = process.env.FROM_EMAIL || process.env.SMTP_USER;
 
 function oppositeRole(role) {
   return role === 'patient' ? 'therapist' : 'patient';
@@ -183,18 +185,97 @@ function toMapsLink(location) {
   return `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
 }
 
-async function sendEmail({ to, subject, html, text }) {
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildEmailLayout({ title, subtitle = '', intro = '', contentHtml = '', closingHtml = '' }) {
+  return `
+    <div style="background:#f5f8fb;padding:28px 16px;font-family:'Segoe UI',Arial,sans-serif;color:#0f172a;">
+      <table role="presentation" style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;border-collapse:separate;">
+        <tr>
+          <td style="background:linear-gradient(135deg,#1d4ed8,#0f766e);padding:22px 24px;color:#ffffff;">
+            <p style="margin:0 0 4px 0;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.9;">TheraSense</p>
+            <h1 style="margin:0;font-size:22px;line-height:1.3;">${escapeHtml(title)}</h1>
+            ${subtitle ? `<p style="margin:8px 0 0 0;font-size:14px;opacity:0.95;">${escapeHtml(subtitle)}</p>` : ''}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px;">
+            ${intro ? `<p style="margin:0 0 14px 0;font-size:15px;line-height:1.65;color:#1e293b;">${escapeHtml(intro)}</p>` : ''}
+            ${contentHtml}
+            ${closingHtml ? `<div style="margin-top:18px;font-size:14px;line-height:1.7;color:#334155;">${closingHtml}</div>` : ''}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:14px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;">
+            <p style="margin:0;font-size:12px;color:#64748b;">TheraSense - Supporting Your Mental Wellness Journey</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
+function buildSessionInfoBlock({ patientName, therapistName, sessionDateTime, sessionLink }) {
+  return `
+    <table role="presentation" style="width:100%;border-collapse:collapse;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+      <tr>
+        <td style="padding:12px 14px;font-size:14px;color:#334155;border-bottom:1px solid #e2e8f0;"><strong>Patient</strong><br/>${escapeHtml(patientName)}</td>
+      </tr>
+      <tr>
+        <td style="padding:12px 14px;font-size:14px;color:#334155;border-bottom:1px solid #e2e8f0;"><strong>Therapist</strong><br/>${escapeHtml(therapistName)}</td>
+      </tr>
+      <tr>
+        <td style="padding:12px 14px;font-size:14px;color:#334155;border-bottom:1px solid #e2e8f0;"><strong>Date and Time</strong><br/>${escapeHtml(sessionDateTime)}</td>
+      </tr>
+      <tr>
+        <td style="padding:12px 14px;font-size:14px;color:#334155;"><strong>Session Link</strong><br/><a href="${escapeHtml(sessionLink)}" style="color:#1d4ed8;text-decoration:none;">${escapeHtml(sessionLink)}</a></td>
+      </tr>
+    </table>
+  `;
+}
+
+async function sendEmail({ to, subject, html, text, attachments = [], maxAttempts = 3 }) {
   if (!MAIL_FROM) {
-    throw new Error('FROM_EMAIL or SMTP_USER must be configured');
+    throw new Error('FROM_EMAIL or EMAIL_USER must be configured');
   }
 
-  return mailTransport.sendMail({
-    from: MAIL_FROM,
-    to,
-    subject,
-    html,
-    text,
-  });
+  if (!MAIL_USER || !MAIL_PASS) {
+    throw new Error('EMAIL_USER and EMAIL_PASS (or SMTP_USER and SMTP_PASS) must be configured');
+  }
+
+  let lastError = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const info = await mailTransport.sendMail({
+        from: MAIL_FROM,
+        to,
+        subject,
+        html,
+        text,
+        attachments,
+      });
+      return info;
+    } catch (error) {
+      lastError = error;
+      console.error(`Email send failed (attempt ${attempt}/${maxAttempts}) to ${to}:`, error?.message || error);
+      if (attempt < maxAttempts) {
+        await wait(600 * attempt);
+      }
+    }
+  }
+
+  throw lastError || new Error('Unknown email send failure');
 }
 
 async function getUserProfile(uid) {
@@ -226,19 +307,24 @@ async function sendBookingEmailBySession(sessionId, meetingLink) {
 
   const sessionDateTime = formatDateTime(session.startTime);
   const link = meetingLink || `${APP_BASE_URL}/patient?sessionId=${sessionId}`;
-  const subject = `Appointment confirmed for ${sessionDateTime}`;
+  const subject = 'Your Therapy Session is Confirmed - TheraSense';
+  const patientName = patient.name || patient.email || 'Patient';
+  const therapistName = therapist.name || therapist.email || 'Therapist';
 
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#0f172a">
-      <h2>Your teleconsultation is confirmed</h2>
-      <p><strong>Patient:</strong> ${patient.name || patient.email}</p>
-      <p><strong>Therapist:</strong> ${therapist.name || therapist.email}</p>
-      <p><strong>Date & Time:</strong> ${sessionDateTime}</p>
-      <p><strong>Meeting Link:</strong> <a href="${link}">${link}</a></p>
-    </div>
-  `;
+  const html = buildEmailLayout({
+    title: 'Your Therapy Session Is Confirmed',
+    subtitle: 'We are here to support your journey',
+    intro: 'Your session has been successfully scheduled. We are here to support your journey with care and consistency.',
+    contentHtml: buildSessionInfoBlock({
+      patientName,
+      therapistName,
+      sessionDateTime,
+      sessionLink: link,
+    }),
+    closingHtml: '<p style="margin:0;">Please join a few minutes early to settle in comfortably.</p>',
+  });
 
-  const text = `Appointment confirmed\nPatient: ${patient.name || patient.email}\nTherapist: ${therapist.name || therapist.email}\nDate & Time: ${sessionDateTime}\nMeeting Link: ${link}`;
+  const text = `Your Therapy Session is Confirmed - TheraSense\nPatient: ${patientName}\nTherapist: ${therapistName}\nDate and Time: ${sessionDateTime}\nSession Link: ${link}\n\nYour session has been successfully scheduled. We are here to support your journey.`;
 
   await Promise.all([
     sendEmail({ to: patient.email, subject, html, text }),
@@ -271,18 +357,22 @@ async function sendReminderEmailBySession(sessionId) {
 
   const link = `${APP_BASE_URL}/patient?sessionId=${sessionId}`;
   const sessionDateTime = formatDateTime(session.startTime);
-  const subject = `Reminder: session starts in 10 minutes`;
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#0f172a">
-      <h2>Session reminder</h2>
-      <p>Your teleconsultation begins in 10 minutes.</p>
-      <p><strong>Patient:</strong> ${patient.name || patient.email}</p>
-      <p><strong>Therapist:</strong> ${therapist.name || therapist.email}</p>
-      <p><strong>Date & Time:</strong> ${sessionDateTime}</p>
-      <p><strong>Meeting Link:</strong> <a href="${link}">${link}</a></p>
-    </div>
-  `;
-  const text = `Reminder: session starts in 10 minutes\nPatient: ${patient.name || patient.email}\nTherapist: ${therapist.name || therapist.email}\nDate & Time: ${sessionDateTime}\nMeeting Link: ${link}`;
+  const subject = 'Reminder: Your Session Starts in 10 Minutes';
+  const patientName = patient.name || patient.email || 'Patient';
+  const therapistName = therapist.name || therapist.email || 'Therapist';
+  const html = buildEmailLayout({
+    title: 'Reminder: Session Starts in 10 Minutes',
+    subtitle: 'A gentle reminder from TheraSense',
+    intro: 'Your session is about to begin. Take a moment to prepare and join when ready.',
+    contentHtml: buildSessionInfoBlock({
+      patientName,
+      therapistName,
+      sessionDateTime,
+      sessionLink: link,
+    }),
+    closingHtml: '<p style="margin:0;">Wishing you a calm and meaningful session.</p>',
+  });
+  const text = `Reminder: Your Session Starts in 10 Minutes\nDate and Time: ${sessionDateTime}\nSession Link: ${link}\n\nYour session is about to begin. Take a moment to prepare and join when ready.`;
 
   await Promise.all([
     sendEmail({ to: patient.email, subject, html, text }),
@@ -317,6 +407,147 @@ async function sendEmergencyEmail(payload) {
   const text = `Emergency alert\nPatient: ${patient.name}\nLocation: ${mapsLink || 'Location unavailable'}`;
 
   await sendEmail({ to: targetEmail, subject, html, text });
+  return { ok: true };
+}
+
+function getSessionLink(sessionId, reportLink) {
+  if (reportLink) return reportLink;
+  return `${APP_BASE_URL}/reports?sessionId=${encodeURIComponent(sessionId)}`;
+}
+
+function normalizeSummary(value, fallback = 'Your session summary is available in your TheraSense reports dashboard.') {
+  const text = String(value || '').trim();
+  if (!text) return fallback;
+  return text.length > 1200 ? `${text.slice(0, 1197)}...` : text;
+}
+
+function buildOptionalPdfAttachment(reportPdfBase64, fileName) {
+  if (!reportPdfBase64) return [];
+  try {
+    const normalized = String(reportPdfBase64).replace(/^data:application\/pdf;base64,/, '');
+    return [{
+      filename: fileName || 'therasense-session-report.pdf',
+      content: Buffer.from(normalized, 'base64'),
+      contentType: 'application/pdf',
+    }];
+  } catch (error) {
+    console.error('Invalid PDF attachment payload. Sending email without attachment.', error?.message || error);
+    return [];
+  }
+}
+
+async function sendReportEmailsByPayload(payload = {}) {
+  const { sessionId, reportLink, summary, patientSummary, therapistSummary, reportPdfBase64, reportPdfFileName } = payload;
+  if (!sessionId) throw new Error('sessionId is required');
+
+  const session = await getSession(sessionId);
+  if (!session) throw new Error('Session not found');
+
+  const [patient, therapist] = await Promise.all([
+    getUserProfile(session.patientId),
+    getUserProfile(session.therapistId),
+  ]);
+
+  if (!patient?.email || !therapist?.email) {
+    throw new Error('Missing patient or therapist email address');
+  }
+
+  const sessionDateTime = formatDateTime(session.startTime || session.scheduledAt);
+  const link = getSessionLink(sessionId, reportLink);
+  const commonSummary = normalizeSummary(summary);
+  const patientSafeSummary = normalizeSummary(
+    patientSummary,
+    'Your session reflected meaningful engagement and progress. Please review your full report for gentle next steps.'
+  );
+  const therapistDetailedSummary = normalizeSummary(
+    therapistSummary,
+    commonSummary
+  );
+  const attachments = buildOptionalPdfAttachment(reportPdfBase64, reportPdfFileName);
+  const subject = 'Your Session Summary is Ready';
+
+  const patientHtml = buildEmailLayout({
+    title: 'Your Session Summary Is Ready',
+    subtitle: 'A supportive reflection from your TheraSense session',
+    intro: 'Thank you for your openness during the session. Your progress matters, and your summary is now available.',
+    contentHtml: `
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Session Date:</strong> ${escapeHtml(sessionDateTime)}</p>
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Progress Summary:</strong><br/>${escapeHtml(patientSafeSummary)}</p>
+      <p style="margin:0;font-size:14px;color:#334155;"><strong>View Full Report:</strong><br/><a href="${escapeHtml(link)}" style="color:#1d4ed8;text-decoration:none;">${escapeHtml(link)}</a></p>
+    `,
+    closingHtml: '<p style="margin:0;">Keep taking things one step at a time. Your care team is with you.</p>',
+  });
+
+  const patientText = `Your Session Summary is Ready\nSession Date: ${sessionDateTime}\nProgress Summary: ${patientSafeSummary}\nView Full Report: ${link}`;
+
+  const therapistHtml = buildEmailLayout({
+    title: 'Session Summary Ready for Clinical Review',
+    subtitle: 'TheraSense report generated successfully',
+    intro: 'The session report is now available with insights to support follow-up care.',
+    contentHtml: `
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Patient:</strong> ${escapeHtml(patient.name || patient.email || 'Patient')}</p>
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Session Date:</strong> ${escapeHtml(sessionDateTime)}</p>
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Insights Summary:</strong><br/>${escapeHtml(therapistDetailedSummary)}</p>
+      <p style="margin:0;font-size:14px;color:#334155;"><strong>Open Full Report:</strong><br/><a href="${escapeHtml(link)}" style="color:#1d4ed8;text-decoration:none;">${escapeHtml(link)}</a></p>
+    `,
+  });
+
+  const therapistText = `Your Session Summary is Ready\nPatient: ${patient.name || patient.email || 'Patient'}\nSession Date: ${sessionDateTime}\nInsights Summary: ${therapistDetailedSummary}\nOpen Full Report: ${link}`;
+
+  const results = await Promise.allSettled([
+    sendEmail({ to: patient.email, subject, html: patientHtml, text: patientText, attachments }),
+    sendEmail({ to: therapist.email, subject, html: therapistHtml, text: therapistText, attachments }),
+  ]);
+
+  return {
+    ok: results.some((item) => item.status === 'fulfilled'),
+    patientSent: results[0]?.status === 'fulfilled',
+    therapistSent: results[1]?.status === 'fulfilled',
+  };
+}
+
+async function sendTherapistFollowUpEmail(payload = {}) {
+  const { sessionId, therapistId, therapistMessage, nextSteps = '' } = payload;
+  if (!sessionId) throw new Error('sessionId is required');
+  if (!therapistMessage || !String(therapistMessage).trim()) throw new Error('therapistMessage is required');
+
+  const session = await getSession(sessionId);
+  if (!session) throw new Error('Session not found');
+
+  const resolvedTherapistId = therapistId || session.therapistId;
+  const [patient, therapist] = await Promise.all([
+    getUserProfile(session.patientId),
+    getUserProfile(resolvedTherapistId),
+  ]);
+
+  if (!patient?.email) throw new Error('Patient email address is missing');
+
+  const therapistName = therapist?.name || therapist?.email || session.therapistName || 'Your therapist';
+  const sessionDateTime = formatDateTime(session.startTime || session.scheduledAt);
+  const link = `${APP_BASE_URL}/reports?sessionId=${encodeURIComponent(sessionId)}`;
+
+  const html = buildEmailLayout({
+    title: 'A Note from Your Therapist',
+    subtitle: `${escapeHtml(therapistName)} shared a follow-up reflection`,
+    intro: 'Thank you for your openness during the session. Here are a few reflections to guide you forward.',
+    contentHtml: `
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Session Date:</strong> ${escapeHtml(sessionDateTime)}</p>
+      <p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Therapist Message:</strong><br/>${escapeHtml(therapistMessage)}</p>
+      ${nextSteps ? `<p style="margin:0 0 10px 0;font-size:14px;color:#334155;"><strong>Suggested Next Steps:</strong><br/>${escapeHtml(nextSteps)}</p>` : ''}
+      <p style="margin:0;font-size:14px;color:#334155;"><strong>Session Resources:</strong><br/><a href="${escapeHtml(link)}" style="color:#1d4ed8;text-decoration:none;">${escapeHtml(link)}</a></p>
+    `,
+    closingHtml: '<p style="margin:0;">Progress is built through consistent, compassionate steps. Keep going.</p>',
+  });
+
+  const text = `A Note from Your Therapist\nSession Date: ${sessionDateTime}\nTherapist: ${therapistName}\nMessage: ${String(therapistMessage).trim()}${nextSteps ? `\nNext Steps: ${String(nextSteps).trim()}` : ''}\nSession Resources: ${link}`;
+
+  await sendEmail({
+    to: patient.email,
+    subject: 'A Note from Your Therapist',
+    html,
+    text,
+  });
+
   return { ok: true };
 }
 
@@ -638,6 +869,197 @@ async function generateGroqReply({ message, emotion }) {
   return String(reply).trim();
 }
 
+function extractJsonArray(text = '') {
+  const raw = String(text || '').trim();
+  if (!raw) return [];
+
+  try {
+    const direct = JSON.parse(raw);
+    if (Array.isArray(direct)) return direct;
+    if (Array.isArray(direct?.questions)) return direct.questions;
+  } catch {
+    // Continue to bracket extraction fallback.
+  }
+
+  const firstBracket = raw.indexOf('[');
+  const lastBracket = raw.lastIndexOf(']');
+  if (firstBracket === -1 || lastBracket === -1 || lastBracket <= firstBracket) {
+    return [];
+  }
+
+  const sliced = raw.slice(firstBracket, lastBracket + 1);
+  try {
+    const parsed = JSON.parse(sliced);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function sanitizeMcqQuestions(questions = [], count = 5) {
+  const safeCount = Math.max(5, Math.min(10, Number(count) || 5));
+
+  const cleaned = questions
+    .map((question) => {
+      const questionText = String(question?.questionText || question?.question || '').trim();
+      const options = Array.isArray(question?.options)
+        ? question.options.map((option) => String(option || '').trim()).filter(Boolean)
+        : [];
+      const correctAnswer = String(question?.correctAnswer || '').trim();
+      const explanation = String(question?.explanation || '').trim();
+
+      if (!questionText || options.length < 4) {
+        return null;
+      }
+
+      return {
+        questionText,
+        options: options.slice(0, 4),
+        ...(correctAnswer ? { correctAnswer } : {}),
+        explanation: explanation || 'This response supports emotional awareness and a practical coping step.',
+      };
+    })
+    .filter(Boolean)
+    .slice(0, safeCount);
+
+  return cleaned;
+}
+
+async function generateAssignmentQuestionsWithLlama({ count = 5 }) {
+  if (!LLAMA_API_KEY) {
+    const error = new Error('LLAMA_API_KEY is not configured on the server');
+    error.statusCode = 500;
+    throw error;
+  }
+
+  const safeCount = Math.max(5, Math.min(10, Number(count) || 5));
+  const prompt = `You are a therapist asking questions directly to a patient.
+
+---
+
+🚫 STRICT RULES:
+
+- DO NOT generate questions about therapists
+- DO NOT generate theoretical or knowledge-based questions
+- DO NOT use phrases like:
+  "What is..."
+  "How can a therapist..."
+  "What should a therapist..."
+
+If any question violates this, regenerate everything.
+
+---
+
+✅ REQUIREMENTS:
+
+- Ask questions using "you"
+- Focus on patient's feelings, thoughts, and behavior
+- Keep language simple and human
+- Make it feel like a real therapy conversation
+
+---
+
+🎯 TASK:
+
+Convert therapy concepts into patient self-reflection questions.
+
+---
+
+📌 FORMAT:
+
+Return ONLY JSON:
+
+[
+  {
+    "question": "When you feel overwhelmed, what do you usually do?",
+    "options": [
+      "Try to ignore it",
+      "Talk to someone about it",
+      "Keep it to myself",
+      "Distract myself"
+    ],
+    "correctAnswer": "Talk to someone about it"
+  }
+]
+
+---
+
+📌 TOPICS:
+
+- Emotional awareness
+- Stress triggers
+- Coping behavior
+- Self-reflection
+
+---
+
+📌 TONE:
+
+- Warm
+- Supportive
+- Non-judgmental
+
+---
+
+Generate 5 questions.`;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
+
+  let response;
+  try {
+    response = await fetch(GROQ_CHAT_COMPLETIONS_URL, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${LLAMA_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        temperature: 0.5,
+        max_tokens: 1200,
+        messages: [
+          {
+            role: 'system',
+            content: 'You generate supportive therapist-to-patient reflection MCQs for teleconsultation assignments.',
+          },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    });
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      const timeoutError = new Error('Groq API request timed out');
+      timeoutError.statusCode = 504;
+      throw timeoutError;
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const apiMessage = payload?.error?.message || `Groq API failed with status ${response.status}`;
+    const error = new Error(apiMessage);
+    error.statusCode = response.status;
+    throw error;
+  }
+
+  const rawText = payload?.choices?.[0]?.message?.content || '';
+  const parsedArray = extractJsonArray(rawText);
+  const questions = sanitizeMcqQuestions(parsedArray, safeCount);
+
+  if (!questions.length) {
+    const error = new Error('LLAMA response did not include valid MCQ JSON');
+    error.statusCode = 502;
+    throw error;
+  }
+
+  return questions;
+}
+
 function isBookingIntent(message = '') {
   return /\b(book|schedule|reserve|set up|make|create)\b/i.test(message) &&
     /\b(meeting|appointment|session|therapy|call|consultation)\b/i.test(message);
@@ -886,6 +1308,18 @@ async function chatHandler(req, res) {
 app.post('/api/chat', chatHandler);
 app.post('/chat', chatHandler);
 
+app.post('/api/assignments/generate', async (req, res) => {
+  try {
+    const requestedCount = Number(req.body?.count || 5);
+    const questions = await generateAssignmentQuestionsWithLlama({ count: requestedCount });
+    return res.json({ questions });
+  } catch (error) {
+    const status = Number(error?.statusCode || 500);
+    console.error('Assignment generation API error:', error?.message || error);
+    return res.status(status).json({ error: error?.message || 'Unable to generate assignment questions' });
+  }
+});
+
 app.post('/send-booking-email', async (req, res) => {
   try {
     const { sessionId, meetingLink } = req.body || {};
@@ -907,6 +1341,26 @@ app.post('/send-reminder-email', async (req, res) => {
   } catch (error) {
     console.error('Reminder email error:', error);
     return res.status(500).json({ error: error.message || 'Unable to send reminder email' });
+  }
+});
+
+app.post('/send-report-email', async (req, res) => {
+  try {
+    const result = await sendReportEmailsByPayload(req.body || {});
+    return res.json(result);
+  } catch (error) {
+    console.error('Report email error:', error);
+    return res.status(500).json({ error: error.message || 'Unable to send report email' });
+  }
+});
+
+app.post('/send-therapist-note', async (req, res) => {
+  try {
+    const result = await sendTherapistFollowUpEmail(req.body || {});
+    return res.json(result);
+  } catch (error) {
+    console.error('Therapist follow-up email error:', error);
+    return res.status(500).json({ error: error.message || 'Unable to send therapist follow-up email' });
   }
 });
 

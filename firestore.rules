@@ -112,6 +112,44 @@ service cloud.firestore {
         resource.data.therapistId == request.auth.uid;
     }
 
+    match /assignments/{assignmentId} {
+      allow read: if isSignedIn() && (
+        resource.data.therapistId == request.auth.uid ||
+        resource.data.patientId == request.auth.uid
+      );
+
+      allow create: if isSignedIn() &&
+        isTherapist() &&
+        request.resource.data.therapistId == request.auth.uid &&
+        request.resource.data.patientId is string;
+
+      allow update: if isSignedIn() && (
+        (isTherapist() && resource.data.therapistId == request.auth.uid) ||
+        (isPatient() && resource.data.patientId == request.auth.uid)
+      );
+
+      allow delete: if isSignedIn() &&
+        isTherapist() &&
+        resource.data.therapistId == request.auth.uid;
+    }
+
+    match /responses/{responseId} {
+      allow read: if isSignedIn() && (
+        resource.data.patientId == request.auth.uid ||
+        (
+          isTherapist() &&
+          exists(/databases/$(database)/documents/assignments/$(resource.data.assignmentId)) &&
+          get(/databases/$(database)/documents/assignments/$(resource.data.assignmentId)).data.therapistId == request.auth.uid
+        )
+      );
+
+      allow create, update: if isSignedIn() &&
+        isPatient() &&
+        request.resource.data.patientId == request.auth.uid;
+
+      allow delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

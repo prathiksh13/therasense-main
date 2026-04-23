@@ -20,7 +20,7 @@ export default function DashboardShell({ children, homePath = '/patient-home' })
     <div className="dashboard-shell">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} homePath={homePath} />
       <div className="dashboard-shell__content">
-        <Navbar onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
+        <Navbar />
         <main className="dashboard-main">{children}</main>
       </div>
     </div>

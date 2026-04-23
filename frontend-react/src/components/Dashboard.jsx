@@ -35,8 +35,6 @@ export default function Dashboard({ upcomingSession, stats = [], activities = []
         {upcomingSession ? (
           <div className="dashboard-upcoming glass">
             <p className="dashboard-upcoming__label">Upcoming session</p>
-            <p className="dashboard-upcoming__title">{upcomingSession.title}</p>
-            <p className="dashboard-upcoming__subtext">{upcomingSession.subtitle}</p>
             <div className="dashboard-upcoming__meta">
               <span>{upcomingSession.date}</span>
               <span>{upcomingSession.time}</span>

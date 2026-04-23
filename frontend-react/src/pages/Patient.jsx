@@ -615,7 +615,6 @@ export default function Patient() {
           role="patient"
           title="Patient Session"
           subtitle="Live session"
-          onMenuToggle={() => setSidebarOpen((value) => !value)}
         />
 
         <main className="call-dashboard-main">

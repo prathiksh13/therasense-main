@@ -1,4 +1,12 @@
-export default function SessionList({ title, sessions = [], emptyText = 'No sessions', actionLabel = 'Join', onAction, onDelete }) {
+export default function SessionList({
+  title,
+  sessions = [],
+  emptyText = 'No sessions',
+  actionLabel = 'Join',
+  onAction,
+  onDelete,
+  hideSubtitle = false,
+}) {
   return (
     <section className="workspace-panel glass p-4 dashboard-card-hover">
       <p className="dashboard-panel__eyebrow">Sessions</p>
@@ -14,7 +22,7 @@ export default function SessionList({ title, sessions = [], emptyText = 'No sess
             >
               <div>
                 <p className="font-semibold text-slate-100">{session.title}</p>
-                <p className="mt-1 text-xs text-slate-400">{session.subtitle}</p>
+                {!hideSubtitle ? <p className="mt-1 text-xs text-slate-400">{session.subtitle}</p> : null}
               </div>
               <div className="flex items-center gap-2">
                 <button

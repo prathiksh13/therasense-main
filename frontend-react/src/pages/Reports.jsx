@@ -131,17 +131,38 @@ function getDominantEmotion(percentages = {}) {
 }
 
 function buildPatientInsight(percentages = {}) {
-  const top = getTopEmotions(percentages, 2)
-  if (!top.length) return 'No sufficient session data yet. Complete more sessions to receive personalized trend insights.'
-
-  const lead = EMOTION_META[top[0].emotion]?.label || top[0].emotion
-  const secondary = top[1] ? EMOTION_META[top[1].emotion]?.label || top[1].emotion : null
-
-  if (!secondary) {
-    return `Your session was mostly ${lead.toLowerCase()} (${top[0].percentage}%). This can be discussed with your therapist for context.`
+  const stressLoad = safeNumber(percentages.sad) + safeNumber(percentages.angry) + safeNumber(percentages.fearful);
+  
+  if (stressLoad > 60) {
+    return "You navigated some tough moments this session. Healing takes time, but you're doing the hard work by showing up.";
+  } else if (stressLoad > 30) {
+    return "You experienced a mix of feelings today. It's perfectly okay to have moments of stress alongside moments of calm.";
+  } else {
+    return "You maintained a strong sense of balance during this session. Keep using your coping strategies—they are working.";
   }
+}
 
-  return `Your emotional pattern was mainly ${lead.toLowerCase()} (${top[0].percentage}%), followed by ${secondary.toLowerCase()} (${top[1].percentage}%). Use this as a gentle reflection point for your next session.`
+function getPositiveSummary(stressScore) {
+  if (stressScore > 50) {
+    return "You’re learning to sit with your emotions. That takes courage.";
+  } else if (stressScore > 20) {
+    return "You showed improved emotional balance during this session.";
+  }
+  return "You maintained a calm and grounded presence today.";
+}
+
+function buildJourneyPoints(points) {
+  return points.map((p, i) => {
+    const positive = safeNumber(p.happy) + safeNumber(p.neutral);
+    const negative = safeNumber(p.sad) + safeNumber(p.angry) + safeNumber(p.fearful);
+    const total = positive + negative || 1;
+    const calmScore = Math.round((positive / total) * 100);
+    
+    return {
+      time: p.time || `T${i}`,
+      calmness: calmScore
+    };
+  });
 }
 
 function DocumentIcon() {
@@ -291,11 +312,11 @@ export default function Reports() {
   return (
     <section className="ts-page ths-reports-page">
       <SectionHeader
-        title={isTherapist ? 'Therapist Reports Dashboard' : 'Patient Reports Dashboard'}
+        title={isTherapist ? 'Therapist Reports Dashboard' : 'Your Progress Summary'}
         subtitle={
           isTherapist
             ? 'Detailed session analysis for clinical review'
-            : 'Simple session outcomes to help you understand progress'
+            : 'Encouraging insights to help you track your well-being'
         }
       />
 
@@ -371,14 +392,16 @@ export default function Reports() {
             {filteredReports.map((report) => {
               const points = buildEmotionPoints(report.raw)
               const percentages = calculateEmotionPercentages(points)
-              const topThree = getTopEmotions(percentages, 3)
+              const stressScore = safeNumber(percentages.sad) + safeNumber(percentages.angry) + safeNumber(percentages.fearful)
+              const calmScore = 100 - stressScore
+              const journeyPoints = buildJourneyPoints(points)
 
               return (
-                <Card key={report.id} className="ths-report-card ths-report-card--patient">
+                <Card key={report.id} className="ths-report-card ths-report-card--patient" style={{ borderTop: "4px solid #10b981", borderRadius: "16px" }}>
                   <div className="ths-report-card-head">
                     <div>
-                      <h3 className="ts-section-title">Session on {formatDateLabel(report.createdAt)}</h3>
-                      <p className="ts-text-secondary">Therapist: {report.therapistName || 'Assigned Therapist'}</p>
+                      <h3 className="ts-section-title" style={{ fontSize: '1.15rem' }}>Session on {formatDateLabel(report.createdAt)}</h3>
+                      <p className="ts-text-secondary">Therapist: {report.therapistName || 'Your Therapist'}</p>
                     </div>
                     <div className="ths-report-actions">
                       <button
@@ -386,38 +409,80 @@ export default function Reports() {
                         className="ts-btn ts-btn--outline"
                         onClick={() => setOpenPatientReportId((current) => (current === report.id ? '' : report.id))}
                       >
-                        {openPatientReportId === report.id ? 'Hide details' : 'View details'}
-                      </button>
-                      <button
-                        type="button"
-                        className="ts-btn ts-btn--primary"
-                        onClick={() => generateReportPdfFromData(report.raw || report, `patient-report-${report.id}`)}
-                      >
-                        Download PDF
+                        {openPatientReportId === report.id ? 'Close summary' : 'View progress'}
                       </button>
                     </div>
                   </div>
 
-                  <p className="ths-report-summary">{report.summary}</p>
+                  {openPatientReportId === report.id && (
+                    <div className="patient-progress-panel" style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      
+                      <div style={{ padding: '16px', background: 'linear-gradient(135deg, #f0fdf4, #e0f2fe)', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ background: '#22c55e', color: '#fff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, color: '#166534', fontSize: '1rem', fontWeight: '600' }}>You're making progress</h4>
+                          <p style={{ margin: '4px 0 0 0', color: '#15803d', fontSize: '0.9rem' }}>{getPositiveSummary(stressScore)}</p>
+                        </div>
+                      </div>
 
-                  {openPatientReportId === report.id ? (
-                    <div className="ths-report-details-panel">
-                      <div className="ths-report-top-emotions">
-                        {topThree.map((item) => (
-                          <div key={`${report.id}-${item.emotion}`} className="ths-report-emotion-chip">
-                            <span>{EMOTION_META[item.emotion]?.label || item.emotion}</span>
-                            <strong>{item.percentage}%</strong>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                        <div style={{ padding: '20px 16px', background: '#f8fafc', borderRadius: '12px', textAlign: 'center' }}>
+                          <h4 style={{ margin: '0 0 12px 0', fontSize: '0.95rem', color: '#475569', fontWeight: '500' }}>Emotional Stability Score</h4>
+                          <div style={{ position: 'relative', width: '80px', height: '80px', margin: '0 auto' }}>
+                            <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%' }}>
+                              <path d="M18 2.08451 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+                              <path d="M18 2.08451 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" strokeWidth="4" strokeDasharray={`${calmScore}, 100`} />
+                            </svg>
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: '600', color: '#0f172a' }}>
+                              {calmScore}
+                            </div>
                           </div>
-                        ))}
+                          <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '12px', marginBottom: 0 }}>Balanced & Grounded</p>
+                        </div>
+
+                        <div style={{ padding: '20px 16px', background: '#f8fafc', borderRadius: '12px' }}>
+                          <h4 style={{ margin: '0 0 14px 0', fontSize: '0.95rem', color: '#475569', fontWeight: '500' }}>Key Moments</h4>
+                          <ul style={{ margin: 0, paddingLeft: '20px', color: '#334155', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <li>You showed growing self-awareness.</li>
+                            <li>You reflected on difficult topics bravely.</li>
+                            <li>You explored your feelings at a measured pace.</li>
+                          </ul>
+                        </div>
                       </div>
 
-                      <div className="ths-report-graph-shell">
-                        <SimpleEmotionGraph points={points} selectedEmotions={PATIENT_GRAPH_EMOTIONS} />
+                      <div style={{ height: '220px', margin: '8px 0', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px' }}>
+                          <h4 style={{ margin: '0 0 16px 0', fontSize: '0.95rem', color: '#475569', fontWeight: '500' }}>Emotional Journey</h4>
+                          <div style={{ width: '100%', height: 'calc(100% - 30px)' }}>
+                            <EmotionalJourneyGraph points={journeyPoints} />
+                          </div>
                       </div>
 
-                      <p className="ths-report-insight-text">{buildPatientInsight(percentages)}</p>
+                      <div style={{ padding: '16px', background: '#f1f5f9', borderRadius: '12px', borderLeft: '4px solid #94a3b8' }}>
+                        <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', fontStyle: 'italic', lineHeight: '1.5' }}>
+                          "{buildPatientInsight(percentages)}"
+                        </p>
+                      </div>
+
+                      <div style={{ padding: '16px', background: '#fef3c7', borderRadius: '12px' }}>
+                        <h4 style={{ margin: '0 0 12px 0', fontSize: '0.95rem', color: '#92400e', fontWeight: '600' }}>What you can try this week</h4>
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                          <span style={{ background: '#fde68a', color: '#b45309', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '500' }}>Deep Breathing</span>
+                          <span style={{ background: '#fde68a', color: '#b45309', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '500' }}>Daily Journaling</span>
+                          <span style={{ background: '#fde68a', color: '#b45309', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '500' }}>Positive Affirmations</span>
+                        </div>
+                      </div>
+
+                      {report.raw?.therapistNotes ? (
+                        <div style={{ padding: '16px', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+                          <h4 style={{ margin: '0 0 10px 0', fontSize: '0.95rem', color: '#1e3a8a', fontWeight: '600' }}>Message from your therapist</h4>
+                          <p style={{ margin: 0, color: '#1e40af', fontSize: '0.95rem', lineHeight: '1.5' }}>{report.raw.therapistNotes}</p>
+                        </div>
+                      ) : null}
+
                     </div>
-                  ) : null}
+                  )}
                 </Card>
               )
             })}
@@ -583,6 +648,39 @@ function SimpleEmotionGraph({ points = [], selectedEmotions = [] }) {
             animationEasing="ease-in-out"
           />
         ))}
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
+
+function EmotionalJourneyGraph({ points = [] }) {
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={points} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" vertical={false} />
+        <XAxis dataKey="time" hide />
+        <YAxis domain={[0, 100]} hide />
+        <Tooltip
+          formatter={(value) => [`${value} / 100`, "Calmness Score"]}
+          labelFormatter={() => "Moment"}
+          contentStyle={{
+            borderRadius: 8,
+            border: 'none',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            background: 'rgba(255,255,255,0.95)',
+            color: '#1e293b'
+          }}
+        />
+        <Line
+          type="monotone"
+          dataKey="calmness"
+          stroke="#10b981"
+          strokeWidth={4}
+          dot={false}
+          activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+          isAnimationActive
+          animationDuration={800}
+        />
       </LineChart>
     </ResponsiveContainer>
   )
